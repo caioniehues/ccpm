@@ -1,309 +1,136 @@
 ---
 name: ccpm-prd
-description: Create, parse, and edit Product Requirements Documents (PRDs). Supports brainstorming new features, converting PRDs to epics, and editing existing PRDs.
+description: Manages Product Requirements Documents (PRDs) for CCPM including creation, editing, parsing to epics, and status tracking. Use when working with PRDs or when user mentions product requirements, feature documentation, or epic generation.
 ---
 
 <objective>
-Manage Product Requirements Documents that define features, user needs, and success criteria. PRDs serve as the foundation for technical implementation planning and are the starting point for the epic workflow.
-
-This skill handles three core actions:
-- **new**: Create a new PRD through structured brainstorming
-- **parse**: Convert a PRD into a technical implementation epic
-- **edit**: Modify an existing PRD
+Coordinate Product Requirements Document (PRD) operations including creation through structured brainstorming, editing, parsing to technical epics, and portfolio tracking. Provides a unified interface for managing the product requirements lifecycle from initial documentation through technical implementation planning.
 </objective>
 
-<shared_references>
-Load before any operation:
-- @ccpm/skills/shared-references/datetime.md
-- @ccpm/skills/shared-references/frontmatter-operations.md
-</shared_references>
+<essential_principles>
+## How PRD Management Works
 
-<action name="new">
-<description>
-Launch brainstorming session to create a comprehensive Product Requirements Document for a new feature.
-</description>
+PRDs (Product Requirements Documents) are the foundation of feature development in CCPM. They capture product requirements, user stories, and success criteria before technical implementation.
 
-<preflight>
-1. **Validate feature name format:**
-   - Must be kebab-case (lowercase letters, numbers, hyphens only)
-   - Must start with a letter
-   - If invalid: "❌ Feature name must be kebab-case. Examples: user-auth, payment-v2"
+### PRD Lifecycle
 
-2. **Check for existing PRD:**
-   - Check if `.claude/prds/$ARGUMENTS.md` already exists
-   - If exists, ask: "⚠️ PRD '$ARGUMENTS' already exists. Overwrite? (yes/no)"
-   - Only proceed with explicit 'yes'
-   - If no, suggest: "/pm:prd-parse $ARGUMENTS to create epic from existing PRD"
+1. **Creation**: Brainstorm and document product requirements through structured discovery
+2. **Editing**: Refine and update PRD sections as requirements evolve
+3. **Parsing**: Convert PRD to technical implementation epic
+4. **Tracking**: Monitor PRD status and progress across the portfolio
 
-3. **Verify directory structure:**
-   - Create `.claude/prds/` if needed
-   - Verify write permissions
-</preflight>
+### File Structure
 
-<process>
-1. **Discovery & Context**
-   - Ask clarifying questions about the feature
-   - Understand the problem being solved
-   - Identify target users and use cases
-   - Gather constraints and requirements
+PRDs are stored in `.claude/prds/{feature-name}.md` with frontmatter:
+- **name**: Feature name (kebab-case)
+- **description**: Brief one-line summary
+- **status**: backlog, in-progress, completed, or on-hold
+- **created**: ISO 8601 datetime
+- **updated**: ISO 8601 datetime (when edited)
 
-2. **PRD Structure**
-   Create comprehensive PRD with sections:
+### PRD Sections
 
-   **Executive Summary** - Brief overview and value proposition
+Complete PRDs include:
+- Executive Summary
+- Problem Statement
+- User Stories with acceptance criteria
+- Functional and Non-Functional Requirements
+- Success Criteria (measurable)
+- Constraints & Assumptions
+- Out of Scope (explicit exclusions)
+- Dependencies
 
-   **Problem Statement** - What problem are we solving? Why now?
+### Relationship to Epics
 
-   **User Stories** - Primary personas, user journeys, pain points
+PRDs describe WHAT to build and WHY. Epics describe HOW to build it technically. Use `/pm:prd-parse` to generate an epic from a PRD.
+</essential_principles>
 
-   **Requirements**
-   - Functional Requirements: Core features and capabilities
-   - Non-Functional Requirements: Performance, security, scalability
+<intake>
+What would you like to do with PRDs?
 
-   **Success Criteria** - Measurable outcomes, key metrics
+1. Create a new PRD (brainstorming session)
+2. Edit an existing PRD
+3. Parse PRD to epic (convert product requirements to technical implementation)
+4. List all PRDs
+5. Show PRD status report
 
-   **Constraints & Assumptions** - Technical, timeline, resource limitations
+**Wait for response before proceeding.**
+</intake>
 
-   **Out of Scope** - What we're explicitly NOT building
+<routing>
+| Response | Command | Description |
+|----------|---------|-------------|
+| 1, "new", "create" | `/pm:prd-new` | Launch brainstorming for new PRD |
+| 2, "edit", "modify", "update" | `/pm:prd-edit` | Edit existing PRD sections |
+| 3, "parse", "epic", "convert" | `/pm:prd-parse` | Convert PRD to implementation epic |
+| 4, "list", "show all", "view" | `/pm:prd-list` | List all PRDs with status |
+| 5, "status", "report", "stats" | `/pm:prd-status` | Show PRD status counts |
 
-   **Dependencies** - External and internal dependencies
+**After determining the operation, delegate to the appropriate command.**
+</routing>
 
-3. **File Format**
-   Save to `.claude/prds/$ARGUMENTS.md`:
-   ```markdown
-   ---
-   name: $ARGUMENTS
-   description: [Brief one-line description]
-   status: backlog
-   created: [REAL datetime from date command]
-   ---
+<operation_details>
+## Available Operations
 
-   # PRD: $ARGUMENTS
+**Create New PRD** (`/pm:prd-new <feature_name>`)
+- Validates feature name format (kebab-case)
+- Checks for existing PRD
+- Conducts structured brainstorming session
+- Creates comprehensive PRD with all required sections
+- Saves to `.claude/prds/{feature-name}.md`
 
-   ## Executive Summary
-   [Content...]
+**Edit PRD** (`/pm:prd-edit <feature_name>`)
+- Reads current PRD
+- Allows selective section editing
+- Updates timestamp
+- Checks for associated epic impact
 
-   ## Problem Statement
-   [Content...]
+**Parse to Epic** (`/pm:prd-parse <feature_name>`)
+- Reads PRD requirements
+- Performs technical analysis
+- Creates implementation epic at `.claude/epics/{feature-name}/epic.md`
+- Maps product requirements to technical approach
+- Suggests task breakdown
 
-   [Continue with all sections...]
-   ```
+**List PRDs** (`/pm:prd-list`)
+- Shows all PRDs with status
+- Displays created/updated dates
+- Organized by status
 
-4. **Quality Checks**
-   - All sections complete (no placeholders)
-   - User stories include acceptance criteria
-   - Success criteria are measurable
-   - Dependencies clearly identified
-   - Out of scope items listed
+**Status Report** (`/pm:prd-status`)
+- Shows count by status (backlog, in-progress, completed, on-hold)
+- Portfolio overview
+</operation_details>
 
-5. **Post-Creation**
-   ```
-   ✅ PRD created: .claude/prds/$ARGUMENTS.md
+<quick_start>
+**Common workflow:**
 
-   Summary:
-     - [Brief summary of what was captured]
+```bash
+# 1. Create a new PRD
+/pm:prd-new user-authentication
 
-   Next: Ready to create implementation epic? Run: /pm:prd-parse $ARGUMENTS
-   ```
-</process>
+# 2. Parse to epic when ready
+/pm:prd-parse user-authentication
 
-<error_handling>
-- If step fails, explain clearly what went wrong
-- Never leave partial or corrupted files
-- Provide specific guidance for resolution
-</error_handling>
-</action>
+# 3. View all PRDs
+/pm:prd-list
 
-<action name="parse">
-<description>
-Convert a Product Requirements Document into a technical implementation epic.
-</description>
-
-<preflight>
-1. **Verify feature_name provided:**
-   - If not: "❌ <feature_name> not provided. Run: /pm:prd-parse <feature_name>"
-
-2. **Verify PRD exists:**
-   - Check `.claude/prds/$ARGUMENTS.md`
-   - If not found: "❌ PRD not found: $ARGUMENTS. Create it with: /pm:prd-new $ARGUMENTS"
-
-3. **Validate PRD frontmatter:**
-   - Verify: name, description, status, created
-   - If invalid: "❌ Invalid PRD frontmatter. Check: .claude/prds/$ARGUMENTS.md"
-
-4. **Check for existing epic:**
-   - Check if `.claude/epics/$ARGUMENTS/epic.md` exists
-   - If exists, ask: "⚠️ Epic already exists. Overwrite? (yes/no)"
-   - Only proceed with 'yes'
-
-5. **Verify directory permissions:**
-   - Ensure `.claude/epics/` can be created
-</preflight>
-
-<process>
-1. **Read the PRD**
-   - Load `.claude/prds/$ARGUMENTS.md`
-   - Analyze all requirements and constraints
-   - Understand user stories and success criteria
-   - Extract description from frontmatter
-
-2. **Technical Analysis**
-   - Identify architectural decisions needed
-   - Determine technology stack and approaches
-   - Map functional requirements to technical components
-   - Identify integration points and dependencies
-
-3. **Create Epic File**
-   Create `.claude/epics/$ARGUMENTS/epic.md`:
-   ```markdown
-   ---
-   name: $ARGUMENTS
-   status: backlog
-   created: [REAL datetime]
-   progress: 0%
-   prd: .claude/prds/$ARGUMENTS.md
-   github: [Will be updated when synced]
-   ---
-
-   # Epic: $ARGUMENTS
-
-   ## Overview
-   Brief technical summary of implementation approach
-
-   ## Architecture Decisions
-   - Key technical decisions and rationale
-   - Technology choices
-   - Design patterns to use
-
-   ## Technical Approach
-   ### Frontend Components
-   - UI components needed
-   - State management approach
-
-   ### Backend Services
-   - API endpoints required
-   - Data models and schema
-
-   ### Infrastructure
-   - Deployment considerations
-   - Scaling requirements
-
-   ## Implementation Strategy
-   - Development phases
-   - Risk mitigation
-   - Testing approach
-
-   ## Task Breakdown Preview
-   High-level task categories (limit to 10 or less):
-   - [ ] Category 1: Description
-   - [ ] Category 2: Description
-
-   ## Dependencies
-   - External service dependencies
-   - Internal team dependencies
-
-   ## Success Criteria (Technical)
-   - Performance benchmarks
-   - Quality gates
-
-   ## Estimated Effort
-   - Overall timeline estimate
-   - Resource requirements
-   ```
-
-4. **Quality Validation**
-   - All PRD requirements addressed
-   - Task breakdown covers all areas
-   - Dependencies technically accurate
-   - Estimates realistic
-
-5. **Post-Creation**
-   ```
-   ✅ Epic created: .claude/epics/$ARGUMENTS/epic.md
-
-   Summary:
-     - Task categories: {count}
-     - Key decisions: {list}
-     - Estimated effort: {estimate}
-
-   Next: Ready to break down into tasks? Run: /pm:epic-decompose $ARGUMENTS
-   ```
-</process>
-
-<important_notes>
-- Aim for as few tasks as possible (10 or less)
-- Look for ways to simplify and leverage existing functionality
-- Never create epic with incomplete information
-</important_notes>
-</action>
-
-<action name="edit">
-<description>
-Edit an existing Product Requirements Document.
-</description>
-
-<preflight>
-1. **Verify PRD exists:**
-   - Check `.claude/prds/$ARGUMENTS.md`
-   - If not found: "❌ PRD not found: $ARGUMENTS"
-
-2. **Read current PRD:**
-   - Parse frontmatter
-   - Read all sections
-</preflight>
-
-<process>
-1. **Read Current PRD**
-   - Load `.claude/prds/$ARGUMENTS.md`
-   - Parse frontmatter and all sections
-
-2. **Interactive Edit**
-   Ask user what sections to edit:
-   - Executive Summary
-   - Problem Statement
-   - User Stories
-   - Requirements (Functional/Non-Functional)
-   - Success Criteria
-   - Constraints & Assumptions
-   - Out of Scope
-   - Dependencies
-
-3. **Update PRD**
-   Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
-
-   Update PRD file:
-   - Preserve frontmatter except `updated` field
-   - Apply user's edits to selected sections
-   - Update `updated` field with current datetime
-
-4. **Check Epic Impact**
-   If PRD has associated epic:
-   - Notify: "This PRD has epic: {epic_name}"
-   - Ask: "Epic may need updating. Review epic? (yes/no)"
-   - If yes: "Review with: /pm:epic-edit {epic_name}"
-
-5. **Output**
-   ```
-   ✅ Updated PRD: $ARGUMENTS
-     Sections edited: {list}
-
-   {If has epic}: ⚠️ Epic may need review: {epic_name}
-
-   Next: /pm:prd-parse $ARGUMENTS to update epic
-   ```
-</process>
-
-<important_notes>
-- Preserve original creation date
-- Keep version history in frontmatter if needed
-- Follow frontmatter-operations reference
-</important_notes>
-</action>
+# 4. Edit if needed
+/pm:prd-edit user-authentication
+```
+</quick_start>
 
 <success_criteria>
-- **new**: Comprehensive PRD created through structured brainstorming
-- **parse**: Technical epic created covering all PRD requirements
-- **edit**: PRD updated with proper datetime and epic impact notification
-- All operations use real datetime from system clock
-- Clear next steps provided to user
+PRD operations are successful when:
+
+- **New PRD**: File created with valid frontmatter, all sections complete, no placeholders
+- **Edit PRD**: Specified sections updated, timestamp refreshed, frontmatter preserved
+- **Parse to Epic**: Epic created with technical approach, task breakdown, and PRD reference
+- **List/Status**: Current PRD state accurately displayed
+
+All operations should:
+- Use real timestamps (never placeholders)
+- Validate inputs before processing
+- Provide clear error messages
+- Suggest next steps after completion
 </success_criteria>

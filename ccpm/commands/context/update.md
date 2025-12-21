@@ -1,6 +1,7 @@
 ---
-description: Update project context with recent changes
-allowed-tools: Bash, Read, Write, Glob
+description: Update project context documentation to reflect current state
+argument-hint: "[specific-context-file]"
+allowed-tools: Bash(git:*), Bash(ls:*), Bash(find:*), Bash(date:*), Read, Write, Glob
 ---
 
 <objective>

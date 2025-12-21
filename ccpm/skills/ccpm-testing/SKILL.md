@@ -1,358 +1,109 @@
 ---
 name: ccpm-testing
-description: Configure and execute tests with intelligent framework detection and test-runner agent integration. Supports priming test environment and running tests.
+description: Manages testing operations for CCPM projects. Prepares testing environments by detecting test frameworks across 12+ languages, validates dependencies, and executes tests using configured test-runner agent. Use when setting up testing or running tests.
 ---
 
-<objective>
-Provide comprehensive testing support for Claude Code projects by detecting test frameworks, configuring test runners, and executing tests with detailed analysis. The skill ensures consistent, reliable test execution across different languages and frameworks.
+<essential_principles>
+## How CCPM Testing Works
 
-This skill handles two core actions:
-- **prime**: Detect framework, validate dependencies, configure test-runner
-- **run**: Execute tests with the configured test-runner agent
-</objective>
+CCPM testing manages two core operations that ensure reliable, debuggable test execution across multiple programming languages.
 
-<shared_references>
-Load before any operation:
-- @ccpm/skills/shared-references/datetime.md
-</shared_references>
+### 1. Prime - Environment Preparation
 
-<action name="prime">
-<description>
-Prepare the testing environment by detecting the test framework, validating dependencies, and configuring the test-runner agent for optimal test execution.
-</description>
+Automatically detects test frameworks across JavaScript/Node.js, Python, Rust, Go, PHP, C#/.NET, Java, Kotlin, Swift, Dart/Flutter, C/C++, and Ruby. Validates dependencies, discovers test files, and creates comprehensive configuration at `.claude/testing-config.md` for the test-runner agent.
 
-<preflight>
-**Framework Detection by Language:**
+### 2. Run - Test Execution
 
-JavaScript/Node.js:
-- Check package.json for test scripts: `grep -E '"test"|"jest"|"mocha"' package.json 2>/dev/null`
-- Config files: `ls jest.config.* .mocharc.* 2>/dev/null`
-- Test directories: `find . -type d \( -name "test" -o -name "tests" -o -name "__tests__" \) -maxdepth 3 2>/dev/null`
+Executes tests using the configured test-runner agent from `.claude/agents/test-runner.md`. Supports running all tests, specific test files, or pattern-based test selection with verbose debugging output.
 
-Python:
-- pytest: `find . -name "pytest.ini" -o -name "conftest.py" 2>/dev/null`
-- Requirements: `grep -E "pytest|unittest" requirements.txt 2>/dev/null`
+### Key Testing Principles
 
-Rust:
-- Cargo tests: `grep '\[dev-dependencies\]' Cargo.toml 2>/dev/null`
-- Test modules: `find . -name "*.rs" -exec grep -l "#\[cfg(test)\]" {} \; 2>/dev/null | head -5`
+**Multi-language framework detection**: Automatically identifies Jest, Mocha, Pytest, PHPUnit, Cargo, Go test, Maven, Gradle, dotnet test, XCTest, Flutter test, CMake/CTest, RSpec, and more.
 
-Go:
-- Test files: `find . -name "*_test.go" 2>/dev/null | head -5`
+**Verbose debugging output**: All test execution uses maximum verbosity to capture complete stack traces and failure context.
 
-PHP:
-- PHPUnit: `find . -name "phpunit.xml*" 2>/dev/null`
-- Pest: `grep "pestphp/pest" composer.json 2>/dev/null`
+**Real services only**: No mocking - tests run against actual implementations to ensure realistic behavior and catch integration issues.
 
-C#/.NET:
-- Test frameworks: `find . -name "*.csproj" -exec grep -l -E "Microsoft\.NET\.Test|NUnit|xunit" {} \; 2>/dev/null`
+**Sequential execution**: Tests run one at a time to avoid race conditions, resource conflicts, and hard-to-debug parallel execution issues.
 
-Java/Kotlin:
-- Maven: `grep "junit" pom.xml 2>/dev/null`
-- Gradle: `grep -E "junit|testImplementation" build.gradle* 2>/dev/null`
+**Comprehensive validation**: Validates framework presence, dependency installation, test file discovery, and environment configuration before execution.
+</essential_principles>
 
-Swift:
-- XCTest: `grep "XCTest" Package.swift 2>/dev/null`
+<intake>
+What would you like to do?
 
-Dart/Flutter:
-- Flutter test: `grep "flutter_test" pubspec.yaml 2>/dev/null`
+1. **Prime** - Prepare testing environment (detect frameworks, validate dependencies, configure test-runner)
+2. **Run** - Execute tests (all tests or specific files/patterns)
 
-Ruby:
-- RSpec: `find . -name ".rspec" -o -name "spec_helper.rb" 2>/dev/null`
-- Minitest: `grep "minitest" Gemfile 2>/dev/null`
+**Wait for response before proceeding.**
+</intake>
 
-C/C++:
-- GoogleTest/Catch2: `grep -E "gtest|GTest|Catch2" CMakeLists.txt 2>/dev/null`
-</preflight>
+<routing>
+| Response | Operation | Command File |
+|----------|-----------|--------------|
+| 1, "prime", "prepare", "setup", "configure", "detect" | Prime testing environment | Read and execute `/home/caio/Developer/Claude/ccpm-audit/ccpm/commands/testing/prime.md` |
+| 2, "run", "execute", "test", "tests" | Run tests | Read and execute `/home/caio/Developer/Claude/ccpm-audit/ccpm/commands/testing/run.md` |
 
-<framework_configurations>
-**JavaScript/Node.js (Jest):**
-```yaml
-framework: jest
-test_command: npm test
-test_directory: __tests__
-config_file: jest.config.js
-options: [--verbose, --no-coverage, --runInBand]
-environment: { NODE_ENV: test }
-```
+**After identifying the operation, read the command file and follow its instructions exactly.**
+</routing>
 
-**JavaScript/Node.js (Mocha):**
-```yaml
-framework: mocha
-test_command: npm test
-test_directory: test
-config_file: .mocharc.js
-options: [--reporter spec, --recursive, --bail]
-environment: { NODE_ENV: test }
-```
+<supported_frameworks>
+## Framework Support Matrix
 
-**Python (Pytest):**
-```yaml
-framework: pytest
-test_command: pytest
-test_directory: tests
-config_file: pytest.ini
-options: [-v, --tb=short, --strict-markers]
-environment: { PYTHONPATH: . }
-```
+**JavaScript/Node.js**: Jest, Mocha, Jasmine (via package.json and config files)
 
-**Rust:**
-```yaml
-framework: cargo
-test_command: cargo test
-test_directory: tests
-config_file: Cargo.toml
-options: [--verbose, --nocapture]
-```
+**Python**: Pytest, unittest, nose (via pytest.ini, conftest.py, setup.cfg)
 
-**Go:**
-```yaml
-framework: go
-test_command: go test
-test_directory: .
-config_file: go.mod
-options: [-v, ./...]
-```
+**PHP**: PHPUnit, Pest (via phpunit.xml, composer.json)
 
-**PHP (PHPUnit):**
-```yaml
-framework: phpunit
-test_command: ./vendor/bin/phpunit
-test_directory: tests
-config_file: phpunit.xml
-options: [--verbose, --testdox]
-environment: { APP_ENV: testing }
-```
+**Java**: JUnit with Maven or Gradle (via pom.xml, build.gradle)
 
-**C#/.NET:**
-```yaml
-framework: dotnet
-test_command: dotnet test
-test_directory: .
-options: [--verbosity normal]
-```
+**Kotlin**: Kotlin test, Spek (via build.gradle.kts)
 
-**Java (Maven):**
-```yaml
-framework: maven
-test_command: mvn test
-test_directory: src/test/java
-config_file: pom.xml
-```
+**C#/.NET**: MSTest, NUnit, xUnit (via .csproj, .sln files)
 
-**Java (Gradle):**
-```yaml
-framework: gradle
-test_command: ./gradlew test
-test_directory: src/test/java
-config_file: build.gradle
-options: [--info, --continue]
-```
+**Swift**: XCTest (via Package.swift, Xcode projects)
 
-**Swift:**
-```yaml
-framework: swift
-test_command: swift test
-test_directory: Tests
-config_file: Package.swift
-options: [--verbose]
-```
+**Dart/Flutter**: Flutter test (via pubspec.yaml)
 
-**Dart/Flutter:**
-```yaml
-framework: flutter
-test_command: flutter test
-test_directory: test
-config_file: pubspec.yaml
-options: [--verbose]
-```
+**C/C++**: GoogleTest, Catch2 (via CMakeLists.txt)
 
-**Ruby (RSpec):**
-```yaml
-framework: rspec
-test_command: bundle exec rspec
-test_directory: spec
-config_file: .rspec
-options: [--format documentation, --color]
-environment: { RAILS_ENV: test }
-```
+**Ruby**: RSpec, Minitest (via .rspec, Gemfile)
 
-**C/C++ (CMake):**
-```yaml
-framework: cmake
-test_command: ctest
-test_directory: build
-config_file: CMakeLists.txt
-options: [--verbose, --output-on-failure]
-```
-</framework_configurations>
+**Go**: go test (via *_test.go files)
 
-<process>
-1. **Detect Framework**
-   - Run detection commands for each supported language
-   - Identify primary test framework
+**Rust**: cargo test (via Cargo.toml, #[cfg(test)])
+</supported_frameworks>
 
-2. **Validate Dependencies**
-   - Check if test dependencies are installed
-   - If missing, suggest installation:
-     - Node.js: `npm install` or `pnpm install`
-     - Python: `pip install -r requirements.txt` or `poetry install`
-     - PHP: `composer install`
-     - Java: `mvn clean install` or `./gradlew build`
-     - C#/.NET: `dotnet restore`
-     - Ruby: `bundle install`
-     - Dart/Flutter: `flutter pub get`
-     - Swift: `swift package resolve`
-     - C/C++: `cmake .. && make`
+<configuration_output>
+## Generated Configuration
 
-3. **Discover Test Files**
-   - Count test files for detected framework
-   - Identify test naming patterns
+Prime operation creates `.claude/testing-config.md` containing:
 
-4. **Create Configuration**
-   Save to `.claude/testing-config.md`:
-   ```markdown
-   ---
-   framework: {detected_framework}
-   test_command: {detected_command}
-   created: {REAL datetime}
-   ---
+- **Framework details**: Type, version, configuration file paths
+- **Test structure**: Directory locations, file count, naming patterns
+- **Execution commands**: Full suite, specific test, debugging modes
+- **Environment requirements**: Environment variables, test databases, services
+- **Test-runner agent setup**: Verbose output, sequential execution, real services
 
-   # Testing Configuration
-
-   ## Framework
-   - Type: {framework_name}
-   - Config File: {config_file_path}
-
-   ## Test Structure
-   - Test Directory: {test_dir}
-   - Test Files: {count} files found
-
-   ## Commands
-   - Run All Tests: `{full_test_command}`
-   - Run Specific Test: `{specific_test_command}`
-
-   ## Test Runner Agent Configuration
-   - Use verbose output for debugging
-   - Run tests sequentially (no parallel)
-   - Capture full stack traces
-   - No mocking - use real implementations
-   ```
-
-5. **Output Summary**
-   ```
-   🧪 Testing Environment Primed
-
-   🔍 Detection Results:
-     ✅ Framework: {framework_name}
-     ✅ Test Files: {count} files
-     ✅ Dependencies: All installed
-
-   ⚡ Ready Commands:
-     - Run all tests: /testing:run
-     - Run specific: /testing:run {test_file}
-
-   💡 Tips:
-     - Always run tests with verbose output
-     - Check test structure if tests fail
-   ```
-</process>
-
-<error_handling>
-- **No Framework Detected**: "⚠️ No test framework found. Please specify your testing setup."
-- **Missing Dependencies**: "❌ Test framework not installed. Install dependencies first."
-- **No Test Files**: "⚠️ No test files found. Create tests first or check directory location."
-</error_handling>
-</action>
-
-<action name="run">
-<description>
-Execute tests with the configured test-runner agent, providing detailed analysis of results.
-</description>
-
-<preflight>
-1. **Check Configuration**
-   ```bash
-   test -f .claude/testing-config.md || echo "❌ Testing not configured. Run /testing:prime first"
-   ```
-
-2. **Validate Target** (if provided)
-   ```bash
-   # For file targets
-   test -f "$ARGUMENTS" || echo "⚠️ Test file not found: $ARGUMENTS"
-   ```
-</preflight>
-
-<process>
-1. **Determine Test Command**
-   - No arguments → Run full test suite from config
-   - File path → Run specific test file
-   - Pattern → Run tests matching pattern
-
-2. **Execute Tests**
-   Use the test-runner agent from `.claude/agents/test-runner.md`:
-   ```markdown
-   Execute tests for: $ARGUMENTS (or "all" if empty)
-
-   Requirements:
-   - Run with verbose output for debugging
-   - No mocks - use real services
-   - Capture full output including stack traces
-   - If test fails, check test structure before assuming code issue
-   ```
-
-3. **Monitor Execution**
-   - Show test progress
-   - Capture stdout and stderr
-   - Note execution time
-
-4. **Report Results**
-
-   **Success:**
-   ```
-   ✅ All tests passed ({count} tests in {time}s)
-   ```
-
-   **Failure:**
-   ```
-   ❌ Test failures: {failed_count} of {total_count}
-
-   {test_name} - {file}:{line}
-     Error: {error_message}
-     Likely: {test issue | code issue}
-     Fix: {suggestion}
-
-   Run with more detail: /testing:run {specific_test}
-   ```
-
-   **Mixed:**
-   ```
-   Tests complete: {passed} passed, {failed} failed, {skipped} skipped
-
-   Failed:
-   - {test_1}: {brief_reason}
-   - {test_2}: {brief_reason}
-   ```
-
-5. **Cleanup**
-   ```bash
-   # Kill any hanging test processes
-   pkill -f "jest|mocha|pytest|phpunit|rspec|ctest" 2>/dev/null || true
-   pkill -f "mvn.*test|gradle.*test|dotnet.*test|cargo.*test|go.*test" 2>/dev/null || true
-   ```
-</process>
-
-<error_handling>
-- **Test command fails**: "❌ Test execution failed: {error}. Check test framework is installed."
-- **Timeout**: Kill process and report: "❌ Tests timed out after {time}s"
-- **No tests found**: "❌ No tests found matching: $ARGUMENTS"
-</error_handling>
-</action>
+This configuration is used by the Run operation to execute tests consistently.
+</configuration_output>
 
 <success_criteria>
-- **prime**: Framework detected, dependencies validated, configuration saved
-- **run**: Tests executed successfully with detailed reporting
-- Test-runner agent properly configured
-- Clear, actionable feedback on failures
-- No hanging test processes
+Testing operations are successful when:
+
+**For Prime:**
+- ✅ Test framework detected and validated
+- ✅ Dependencies confirmed installed
+- ✅ Test files discovered and counted
+- ✅ Configuration created at `.claude/testing-config.md`
+- ✅ Test-runner agent configured with proper settings
+- ✅ Validation confirms setup is working
+
+**For Run:**
+- ✅ Tests executed with verbose output
+- ✅ Results clearly reported (passed/failed/skipped counts)
+- ✅ Failures include stack traces and context analysis
+- ✅ Test processes properly cleaned up after execution
+- ✅ Test structure validated (not assumed to be code issues)
 </success_criteria>
