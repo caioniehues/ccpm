@@ -1,66 +1,27 @@
 ---
-allowed-tools: Read, Write, LS
+description: Edit epic details after creation
+argument-hint: <epic_name>
+allowed-tools: Bash, Read, Write, Glob
 ---
 
-# Epic Edit
+<objective>
+Edit epic "$ARGUMENTS" details with interactive selection of fields to modify.
+</objective>
 
-Edit epic details after creation.
+<context>
+Invoke the ccpm-epic skill with action: edit
+Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load reference: @ccpm/skills/shared-references/frontmatter-operations.md
+</context>
 
-## Usage
-```
-/pm:epic-edit <epic_name>
-```
+<process>
+1. Load the ccpm-epic skill
+2. Execute the "edit" action following skill guidance
+3. Apply changes locally and optionally sync to GitHub
+</process>
 
-## Instructions
-
-### 1. Read Current Epic
-
-Read `.claude/epics/$ARGUMENTS/epic.md`:
-- Parse frontmatter
-- Read content sections
-
-### 2. Interactive Edit
-
-Ask user what to edit:
-- Name/Title
-- Description/Overview
-- Architecture decisions
-- Technical approach
-- Dependencies
-- Success criteria
-
-### 3. Update Epic File
-
-Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
-
-Update epic.md:
-- Preserve all frontmatter except `updated`
-- Apply user's edits to content
-- Update `updated` field with current datetime
-
-### 4. Option to Update GitHub
-
-If epic has GitHub URL in frontmatter:
-Ask: "Update GitHub issue? (yes/no)"
-
-If yes:
-```bash
-gh issue edit {issue_number} --body-file .claude/epics/$ARGUMENTS/epic.md
-```
-
-### 5. Output
-
-```
-✅ Updated epic: $ARGUMENTS
-  Changes made to: {sections_edited}
-  
-{If GitHub updated}: GitHub issue updated ✅
-
-View epic: /pm:epic-show $ARGUMENTS
-```
-
-## Important Notes
-
-Preserve frontmatter history (created, github URL, etc.).
-Don't change task files when editing epic.
-Follow `/rules/frontmatter-operations.md`.
+<success_criteria>
+- Changes applied to epic file
+- Frontmatter updated timestamp preserved
+- GitHub issue updated if requested
+</success_criteria>

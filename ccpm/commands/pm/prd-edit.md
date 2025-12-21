@@ -1,65 +1,27 @@
 ---
-allowed-tools: Read, Write, LS
+description: Edit an existing Product Requirements Document
+argument-hint: <feature_name>
+allowed-tools: Read, Write, Glob
 ---
 
-# PRD Edit
+<objective>
+Edit the existing PRD for $ARGUMENTS with user-specified changes.
+</objective>
 
-Edit an existing Product Requirements Document.
+<context>
+Invoke the ccpm-prd skill with action: edit
+Load skill: @ccpm/skills/ccpm-prd/SKILL.md
+PRD location: .claude/prds/$ARGUMENTS.md
+</context>
 
-## Usage
-```
-/pm:prd-edit <feature_name>
-```
+<process>
+1. Load the ccpm-prd skill
+2. Execute the "edit" action following skill guidance
+3. Apply user changes and check epic impact
+</process>
 
-## Instructions
-
-### 1. Read Current PRD
-
-Read `.claude/prds/$ARGUMENTS.md`:
-- Parse frontmatter
-- Read all sections
-
-### 2. Interactive Edit
-
-Ask user what sections to edit:
-- Executive Summary
-- Problem Statement  
-- User Stories
-- Requirements (Functional/Non-Functional)
-- Success Criteria
-- Constraints & Assumptions
-- Out of Scope
-- Dependencies
-
-### 3. Update PRD
-
-Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
-
-Update PRD file:
-- Preserve frontmatter except `updated` field
-- Apply user's edits to selected sections
-- Update `updated` field with current datetime
-
-### 4. Check Epic Impact
-
-If PRD has associated epic:
-- Notify user: "This PRD has epic: {epic_name}"
-- Ask: "Epic may need updating based on PRD changes. Review epic? (yes/no)"
-- If yes, show: "Review with: /pm:epic-edit {epic_name}"
-
-### 5. Output
-
-```
-✅ Updated PRD: $ARGUMENTS
-  Sections edited: {list_of_sections}
-  
-{If has epic}: ⚠️ Epic may need review: {epic_name}
-
-Next: /pm:prd-parse $ARGUMENTS to update epic
-```
-
-## Important Notes
-
-Preserve original creation date.
-Keep version history in frontmatter if needed.
-Follow `/rules/frontmatter-operations.md`.
+<success_criteria>
+- PRD updated with real datetime
+- Epic impact notification if applicable
+- Original creation date preserved
+</success_criteria>
