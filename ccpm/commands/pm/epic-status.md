@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/epic-status.sh $ARGUMENTS)
+description: Show task status breakdown for a specific epic
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/epic-status.sh $ARGUMENTS

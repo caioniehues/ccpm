@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/validate.sh)
+description: Validate PM system structure and configuration
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/validate.sh

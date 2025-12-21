@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/prd-list.sh)
+description: List all PRDs with their status
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/prd-list.sh
