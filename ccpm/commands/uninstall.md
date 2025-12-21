@@ -8,41 +8,32 @@ Safely remove CCPM installation while preserving project data if requested.
 </objective>
 
 <process>
-## Uninstall Workflow
+**1. Survey Installation**
 
-### 1. Survey Installation
 ```
 !`ls -la .claude/ 2>/dev/null | head -10 || echo "No .claude directory found"`
 !`ls -la ccpm/ 2>/dev/null | head -5 || echo "No ccpm directory found"`
 ```
 
-### 2. Confirm with User
+**2. Confirm with User**
+
 Use AskUserQuestion to confirm:
 
-1. **Data Preservation**
-   - Keep .claude/epics/ (your work)?
-   - Keep .claude/prds/ (your documents)?
-   - Keep .claude/context/ (your context files)?
+- **Data Preservation**: Keep .claude/epics/ (your work)? Keep .claude/prds/ (your documents)? Keep .claude/context/ (your context files)?
+- **Confirmation**: "This will remove CCPM. Proceed?"
 
-2. **Confirmation**
-   - "This will remove CCPM. Proceed?"
+**3. Remove CCPM Files** (if confirmed)
 
-### 3. Remove CCPM Files (if confirmed)
+- Remove CCPM system files: `ccpm/` directory (commands, scripts, agents, skills), CCPM-specific configuration
+- Optionally preserve user data: `.claude/epics/`, `.claude/prds/`, `.claude/context/`
 
-**Remove CCPM system files:**
-- `ccpm/` directory (commands, scripts, agents, skills)
-- CCPM-specific configuration
+**4. Clean Up**
 
-**Optionally preserve user data:**
-- `.claude/epics/` - User's epic work
-- `.claude/prds/` - User's PRD documents
-- `.claude/context/` - User's context files
-
-### 4. Clean Up
 - Remove GitHub labels (optional)
 - Remove any CCPM-specific git hooks
 
-### 5. Report
+**5. Report**
+
 ```
 Uninstall complete.
 

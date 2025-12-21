@@ -1,27 +1,24 @@
 ---
+description: Display issue and sub-issues with detailed information
+argument-hint: <issue_number>
 allowed-tools: Bash, Read, LS
 ---
 
-# Issue Show
+<objective>
+Display comprehensive information about a GitHub issue and related sub-issues.
+</objective>
 
-Display issue and sub-issues with detailed information.
+<process>
+**Usage**: `/pm:issue-show <issue_number>`
 
-## Usage
-```
-/pm:issue-show <issue_number>
-```
-
-## Instructions
-
-You are displaying comprehensive information about a GitHub issue and related sub-issues for: **Issue #$ARGUMENTS**
-
-### 1. Fetch Issue Data
+**1. Fetch Issue Data**
 - Use `gh issue view #$ARGUMENTS` to get GitHub issue details
 - Look for local task file: first check `.claude/epics/*/$ARGUMENTS.md` (new naming)
 - If not found, search for file with `github:.*issues/$ARGUMENTS` in frontmatter (old naming)
 - Check for related issues and sub-tasks
 
-### 2. Issue Overview
+**2. Issue Overview**
+
 Display issue header:
 ```
 🎫 Issue #$ARGUMENTS: {Issue Title}
@@ -30,12 +27,13 @@ Display issue header:
    Assignee: {assignee}
    Created: {creation_date}
    Updated: {last_update}
-   
+
 📝 Description:
 {issue_description}
 ```
 
-### 3. Local File Mapping
+**3. Local File Mapping**
+
 If local task file exists:
 ```
 📁 Local Files:
@@ -44,8 +42,8 @@ If local task file exists:
    Last local update: {timestamp}
 ```
 
-### 4. Sub-Issues and Dependencies
-Show related issues:
+**4. Sub-Issues and Dependencies**
+
 ```
 🔗 Related Issues:
    Parent Epic: #{epic_issue_number}
@@ -54,17 +52,17 @@ Show related issues:
    Sub-tasks: #{sub1}, #{sub2}
 ```
 
-### 5. Recent Activity
-Display recent comments and updates:
+**5. Recent Activity**
+
 ```
 💬 Recent Activity:
    {timestamp} - {author}: {comment_preview}
-   {timestamp} - {author}: {comment_preview}
-   
+
    View full thread: gh issue view #$ARGUMENTS --comments
 ```
 
-### 6. Progress Tracking
+**6. Progress Tracking**
+
 If task file exists, show progress:
 ```
 ✅ Acceptance Criteria:
@@ -74,7 +72,8 @@ If task file exists, show progress:
    □ Criterion 4 (not started)
 ```
 
-### 7. Quick Actions
+**7. Quick Actions**
+
 ```
 🚀 Quick Actions:
    Start work: /pm:issue-start $ARGUMENTS
@@ -83,9 +82,15 @@ If task file exists, show progress:
    View in browser: gh issue view #$ARGUMENTS --web
 ```
 
-### 8. Error Handling
+**8. Error Handling**
 - Handle invalid issue numbers gracefully
 - Check for network/authentication issues
 - Provide helpful error messages and alternatives
+</process>
 
-Provide comprehensive issue information to help developers understand context and current status for Issue #$ARGUMENTS.
+<success_criteria>
+- Issue details displayed from GitHub
+- Local file mapping shown if exists
+- Related issues and dependencies listed
+- Quick actions provided for next steps
+</success_criteria>

@@ -128,3 +128,31 @@ fi
 5. **Fail loudly** - Report issues immediately
 6. **Never force** - No `--force` flags ever
 </best_practices>
+
+<common_patterns>
+**Starting work:**
+```bash
+1. cd ../epic-{name}
+2. git pull
+3. Check {issue}-analysis.md for assignment
+4. Update stream-{X}.md with "started"
+5. Begin work on assigned files
+```
+
+**During work:**
+```bash
+1. Make changes to assigned files
+2. Commit with clear message
+3. Update progress file
+4. Check for new commits from others
+5. Continue or coordinate as needed
+```
+
+**Completing work:**
+```bash
+1. Final commit for stream
+2. Update stream-{X}.md with "completed"
+3. Check if other streams need help
+4. Report completion
+```
+</common_patterns>

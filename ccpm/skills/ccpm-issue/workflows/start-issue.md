@@ -1,41 +1,45 @@
-# Workflow: Start Work on Issue
+---
+allowed-tools: Bash, Read, Write, LS, Task
+---
 
-<required_reading>
-**Read these reference files NOW:**
-1. references/frontmatter-operations.md
-2. references/datetime-handling.md
-3. references/parallel-work.md
-4. references/progress-tracking.md
-</required_reading>
+# Start Issue Work
 
-<process>
-## Step 1: Preflight Checks
+Begin work on a GitHub issue with parallel agents based on work stream analysis.
 
-**Get issue details:**
-```bash
-gh issue view $ARGUMENTS --json state,title,labels,body
+## Usage
 ```
-If it fails: "❌ Cannot access issue #$ARGUMENTS. Check number or run: gh auth login"
-
-**Find local task file:**
-- First check if `.claude/epics/*/$ARGUMENTS.md` exists (new naming)
-- If not found, search for file containing `github:.*issues/$ARGUMENTS` in frontmatter (old naming)
-- If not found: "❌ No local task for issue #$ARGUMENTS. This issue may have been created outside the PM system."
-
-**Check for analysis:**
-```bash
-test -f .claude/epics/*/$ARGUMENTS-analysis.md || echo "❌ No analysis found for issue #$ARGUMENTS
-
-Run: /pm:issue-analyze $ARGUMENTS first
-Or: /pm:issue-start $ARGUMENTS --analyze to do both"
+/issue:start <issue_number>
 ```
-If no analysis exists and no --analyze flag, stop execution.
 
-## Step 2: Ensure Worktree Exists
+## Quick Check
+
+1. **Get issue details:**
+   ```bash
+   gh issue view $ARGUMENTS --json state,title,labels,body
+   ```
+   If it fails: "❌ Cannot access issue #$ARGUMENTS. Check number or run: gh auth login"
+
+2. **Find local task file:**
+   - First check if `.claude/epics/*/$ARGUMENTS.md` exists (new naming)
+   - If not found, search for file containing `github:.*issues/$ARGUMENTS` in frontmatter (old naming)
+   - If not found: "❌ No local task for issue #$ARGUMENTS. This issue may have been created outside the PM system."
+
+3. **Check for analysis:**
+   ```bash
+   test -f .claude/epics/*/$ARGUMENTS-analysis.md || echo "❌ No analysis found for issue #$ARGUMENTS
+
+   Run: /issue:analyze $ARGUMENTS first
+   Or: /issue:start $ARGUMENTS --analyze to do both"
+   ```
+   If no analysis exists and no --analyze flag, stop execution.
+
+## Instructions
+
+### 1. Ensure Worktree Exists
 
 Check if epic worktree exists:
 ```bash
-# Find epic name from task file path
+# Find epic name from task file
 epic_name={extracted_from_path}
 
 # Check worktree
@@ -45,25 +49,25 @@ if ! git worktree list | grep -q "epic-$epic_name"; then
 fi
 ```
 
-## Step 3: Read Analysis
+### 2. Read Analysis
 
 Read `.claude/epics/{epic_name}/$ARGUMENTS-analysis.md`:
 - Parse parallel streams
 - Identify which can start immediately
 - Note dependencies between streams
 
-## Step 4: Setup Progress Tracking
+### 3. Setup Progress Tracking
 
-Get current datetime following references/datetime-handling.md
+Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 
 Create workspace structure:
 ```bash
 mkdir -p .claude/epics/{epic_name}/updates/$ARGUMENTS
 ```
 
-Update task file frontmatter `updated` field with current datetime following references/frontmatter-operations.md
+Update task file frontmatter `updated` field with current datetime.
 
-## Step 5: Launch Parallel Agents
+### 4. Launch Parallel Agents
 
 For each stream that can start immediately:
 
@@ -93,7 +97,7 @@ Launch agent using Task tool:
 ```yaml
 Task:
   description: "Issue #$ARGUMENTS Stream {X}"
-  subagent_type: "{agent_type}"
+  subagent_type: "parallel-worker"
   prompt: |
     You are working on Issue #$ARGUMENTS in the epic worktree.
 
@@ -109,7 +113,7 @@ Task:
     2. Work ONLY in your assigned files
     3. Commit frequently with format: "Issue #$ARGUMENTS: {specific change}"
     4. Update progress in: .claude/epics/{epic_name}/updates/$ARGUMENTS/stream-{X}.md
-    5. Follow coordination rules in /rules/agent-coordination.md
+    5. Follow coordination rules in shared-references/agent-coordination.md
 
     If you need to modify files outside your scope:
     - Check if another stream owns them
@@ -119,14 +123,14 @@ Task:
     Complete your stream's work and mark as completed when done.
 ```
 
-## Step 6: GitHub Assignment
+### 5. GitHub Assignment
 
 ```bash
 # Assign to self and mark in-progress
 gh issue edit $ARGUMENTS --add-assignee @me --add-label "in-progress"
 ```
 
-## Step 7: Output Summary
+### 6. Output
 
 ```
 ✅ Started parallel work on issue #$ARGUMENTS
@@ -143,19 +147,19 @@ Progress tracking:
   .claude/epics/{epic_name}/updates/$ARGUMENTS/
 
 Monitor with: /pm:epic-status {epic_name}
-Sync updates: /pm:issue-sync $ARGUMENTS
+Sync updates: /issue:sync $ARGUMENTS
 ```
-</process>
 
-<success_criteria>
-Work is started when:
-- [ ] All preflight checks passed
-- [ ] Worktree exists and is accessible
-- [ ] Analysis file read and parsed
-- [ ] Progress tracking workspace created
-- [ ] Task file frontmatter updated with current datetime
-- [ ] Stream files created for parallel agents
-- [ ] Agents launched via Task tool
-- [ ] Issue assigned on GitHub with "in-progress" label
-- [ ] User informed of launched streams and next steps
-</success_criteria>
+## Error Handling
+
+If any step fails, report clearly:
+- "❌ {What failed}: {How to fix}"
+- Continue with what's possible
+- Never leave partial state
+
+## Important Notes
+
+Follow `shared-references/datetime.md` for timestamps.
+Keep it simple - trust that GitHub and file system work.
+
+$ARGUMENTS

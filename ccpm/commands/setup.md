@@ -8,32 +8,21 @@ Configure CCPM settings for the current project, including GitHub integration an
 </objective>
 
 <process>
-## Setup Workflow
+**1. Check Prerequisites**
 
-### 1. Check Prerequisites
 ```
 !`test -d .claude && echo "✅ CCPM initialized" || echo "❌ Run /pm:init first"`
 ```
 
-### 2. Gather Configuration
+**2. Gather Configuration**
 
 Use AskUserQuestion to collect preferences:
 
-1. **GitHub Integration**
-   - Default labels to create
-   - Issue template preferences
-   - Auto-sync settings
+- **GitHub Integration**: Default labels to create, issue template preferences, auto-sync settings
+- **Workflow Settings**: Epic naming convention, task numbering format, context update frequency
+- **Team Settings** (if applicable): Assignee defaults, review requirements
 
-2. **Workflow Settings**
-   - Epic naming convention
-   - Task numbering format
-   - Context update frequency
-
-3. **Team Settings** (if applicable)
-   - Assignee defaults
-   - Review requirements
-
-### 3. Save Configuration
+**3. Save Configuration**
 
 Write settings to `.claude/config.yaml`:
 
@@ -51,7 +40,8 @@ workflow:
   context_frequency: "session"
 ```
 
-### 4. Validate Setup
+**4. Validate Setup**
+
 Run `/ccpm:doctor` to verify configuration.
 </process>
 

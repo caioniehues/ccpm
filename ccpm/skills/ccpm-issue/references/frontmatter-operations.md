@@ -5,7 +5,7 @@ CCPM uses YAML frontmatter to store task metadata. All frontmatter operations mu
 </overview>
 
 <frontmatter_structure>
-## Task File Frontmatter
+**Task File Frontmatter**
 
 ```yaml
 ---
@@ -32,7 +32,7 @@ size: small|medium|large
 </frontmatter_structure>
 
 <progress_file_frontmatter>
-## Progress File Frontmatter
+**Progress File Frontmatter**
 
 ```yaml
 ---
@@ -51,7 +51,7 @@ completion: 65
 </progress_file_frontmatter>
 
 <epic_frontmatter>
-## Epic Frontmatter
+**Epic Frontmatter**
 
 ```yaml
 ---
@@ -74,7 +74,7 @@ github: https://github.com/org/repo/issues/100
 </epic_frontmatter>
 
 <update_patterns>
-## Safe Update Patterns
+**Safe Update Patterns**
 
 **Read existing frontmatter:**
 ```bash
@@ -111,7 +111,7 @@ fi
 </update_patterns>
 
 <validation_rules>
-## Validation Rules
+**Validation Rules**
 
 **Before any update:**
 1. File must exist
@@ -127,7 +127,7 @@ fi
 </validation_rules>
 
 <common_operations>
-## Common Operations
+**Common Operations**
 
 **Mark task in progress:**
 ```bash

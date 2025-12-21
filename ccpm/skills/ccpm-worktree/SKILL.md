@@ -3,13 +3,16 @@ name: ccpm-worktree
 description: Manages git worktrees for parallel epic development. Use when creating, monitoring, merging, or cleaning up worktrees for CCPM epics. Enables parallel agent work by providing isolated working directories that share the git object database.
 ---
 
+<objective>
+Manage git worktrees for parallel epic development, enabling isolated working directories that share the git object database for concurrent agent work.
+</objective>
+
 <essential_principles>
-## How Worktrees Work in CCPM
-
+<overview>
 Git worktrees enable parallel development by allowing multiple working directories for the same repository. Each worktree has its own working directory but shares the git object database.
+</overview>
 
-### Key Concepts
-
+<key_concepts>
 **Worktree Structure**:
 ```
 project/
@@ -29,13 +32,14 @@ project/
 - Agents touch different files to avoid conflicts
 - Commits are made directly in the worktree
 - Commit message format: `Issue #{number}: {description}`
+</key_concepts>
 
-### Best Practices
-
+<best_practices>
 1. **Clean before create** - Always start from updated main
 2. **Commit frequently** - Small commits are easier to merge
 3. **Delete after merge** - Don't leave stale worktrees
 4. **Never force-resolve** - Conflicts require human intervention
+</best_practices>
 </essential_principles>
 
 <intake>
@@ -242,6 +246,21 @@ Related commands in `ccpm/commands/pm/`:
 - `/pm:epic-merge {epic_name}` - Merge epic branch to main
 - `/pm:epic-status {epic_name}` - Check epic and worktree status
 </command_reference>
+
+<quick_start>
+**Quick start:**
+
+```bash
+# Create worktree for an epic
+/pm:epic-start-worktree my-feature
+
+# List all worktrees
+git worktree list
+
+# Remove worktree after merge
+git worktree remove ../epic-my-feature
+```
+</quick_start>
 
 <success_criteria>
 This skill successfully handles worktree operations when:

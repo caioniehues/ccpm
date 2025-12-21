@@ -1,7 +1,8 @@
 # Workflow: Prime Context
 
 <process>
-## Step 1: Preflight Validation
+<step_preflight>
+**Preflight Validation**
 
 Complete these validation steps silently:
 
@@ -27,8 +28,10 @@ For each context file found:
 - Current state: `git status --short 2>/dev/null`
 - Current branch: `git branch --show-current 2>/dev/null`
 - Note if not in git repository
+</step_preflight>
 
-## Step 2: Load Context in Priority Order
+<step_load_context>
+**Load Context in Priority Order**
 
 Load files in this sequence for optimal understanding:
 
@@ -46,8 +49,10 @@ Load files in this sequence for optimal understanding:
 7. `product-context.md` - User needs and requirements
 8. `project-style-guide.md` - Coding conventions
 9. `project-vision.md` - Long-term direction
+</step_load_context>
 
-## Step 3: Validate During Loading
+<step_validate>
+**Validate During Loading**
 
 For each file:
 - Parse frontmatter and check:
@@ -56,15 +61,19 @@ For each file:
   - `version` is present
 - If frontmatter invalid, note but continue loading content
 - Track: files loaded successfully vs failed
+</step_validate>
 
-## Step 4: Gather Supplementary Information
+<step_supplementary>
+**Gather Supplementary Information**
 
 After loading context:
 - Untracked files: `git ls-files --others --exclude-standard | head -20`
 - Read README.md if exists
 - Check for .env.example or config templates
+</step_supplementary>
 
-## Step 5: Error Recovery
+<step_error_recovery>
+**Error Recovery**
 
 **If critical files missing:**
 - project-overview.md → Try README.md instead
@@ -75,8 +84,10 @@ After loading context:
 - Inform user which files are missing
 - Suggest running update operation
 - Continue with partial context but note limitations
+</step_error_recovery>
 
-## Step 6: Loading Summary
+<step_summary>
+**Loading Summary**
 
 Provide comprehensive summary:
 
@@ -111,8 +122,10 @@ Provide comprehensive summary:
 💡 Project Summary:
   {2-3 sentence summary of project and current state}
 ```
+</step_summary>
 
-## Step 7: Handle Partial Context
+<step_partial_context>
+**Handle Partial Context**
 
 If some files fail to load:
 - Continue with available context
@@ -120,13 +133,16 @@ If some files fail to load:
 - Suggest remediation:
   - "Missing technical context - run create operation"
   - "Progress file corrupted - run update operation"
+</step_partial_context>
 
-## Step 8: Performance Optimization
+<step_performance>
+**Performance Optimization**
 
 For large contexts:
 - Load files in parallel when possible
 - Show progress: "Loading context files... {current}/{total}"
 - Skip extremely large files (>10000 lines) with warning
+</step_performance>
 </process>
 
 <success_criteria>

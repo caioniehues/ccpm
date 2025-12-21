@@ -7,7 +7,9 @@ allowed-tools: Bash(ccpm/scripts/pm/help.sh:*)
 Display comprehensive help for all CCPM project management commands.
 </objective>
 
+<process>
 !bash ccpm/scripts/pm/help.sh
+</process>
 
 <success_criteria>
 Help information displayed with command list and usage examples.

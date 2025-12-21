@@ -1,7 +1,8 @@
 # Workflow: Create Context
 
 <process>
-## Step 1: Preflight Validation
+<step_preflight>
+**Preflight Validation**
 
 Complete these validation steps silently (don't report progress to user):
 
@@ -26,8 +27,10 @@ Complete these validation steps silently (don't report progress to user):
 **Get Current DateTime:**
 - Run: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 - Store for use in all context file frontmatter
+</step_preflight>
 
-## Step 2: Pre-Analysis
+<step_pre_analysis>
+**Pre-Analysis**
 
 **Validation:**
 - Confirm project root directory (presence of .git, package files, etc.)
@@ -40,8 +43,10 @@ Complete these validation steps silently (don't report progress to user):
 - Root structure: `ls -la`
 - Code files: `find . -type f \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' -o -name '*.py' -o -name '*.rs' -o -name '*.go' -o -name '*.php' -o -name '*.swift' -o -name '*.java' -o -name '*.kt' -o -name '*.kts' -o -name '*.cs' -o -name '*.rb' -o -name '*.dart' -o -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' -o -name '*.sh' \) 2>/dev/null | head -20`
 - Read README.md if exists
+</step_pre_analysis>
 
-## Step 3: Create Context Files
+<step_create_files>
+**Create Context Files**
 
 Create each file with frontmatter template:
 ```yaml
@@ -81,8 +86,10 @@ author: Claude Code PM System
 
 9. **project-style-guide.md** - Coding standards, conventions, style preferences
    - Naming conventions, file structure patterns, comment style
+</step_create_files>
 
-## Step 4: Quality Validation
+<step_quality_validation>
+**Quality Validation**
 
 For each file created:
 - Verify file exists: `test -f .claude/context/{filename}`
@@ -94,8 +101,10 @@ If any file fails:
 - Report which files succeeded
 - Provide option to continue with partial context
 - Never leave corrupted or incomplete files
+</step_quality_validation>
 
-## Step 5: Error Handling
+<step_error_handling>
+**Error Handling**
 
 **Common Issues:**
 - No write permissions: "❌ Cannot write to .claude/context/. Check permissions."
@@ -106,8 +115,10 @@ If errors occur:
 - Report successfully created files
 - Clean up any corrupted files
 - Provide actionable guidance to user
+</step_error_handling>
 
-## Step 6: Post-Creation Summary
+<step_summary>
+**Post-Creation Summary**
 
 Provide comprehensive summary:
 
@@ -138,6 +149,7 @@ Provide comprehensive summary:
 🔄 Next: Use prime operation to load context in new sessions
 💡 Tip: Run update operation regularly to keep context current
 ```
+</step_summary>
 </process>
 
 <success_criteria>

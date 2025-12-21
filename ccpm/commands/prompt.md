@@ -1,9 +1,20 @@
 ---
+description: Execute complex prompts from a file when direct input fails
 allowed-tools: Bash, Read, Write, LS
 ---
 
-# This is an ephemeral command. 
+<objective>
+Execute a prompt written to a file when complex prompts with numerous @ references fail in direct input.
+</objective>
 
-Some complex prompts (with numerous @ references) may fail if entered directly into the prompt input. 
+<process>
+This is an ephemeral command for handling complex prompts.
 
-If that happens, write your prompt here and type in `/prompt` in the prompt command.
+Some complex prompts (with numerous @ references) may fail if entered directly into the prompt input.
+
+If that happens, write your prompt to this file and run `/prompt` to execute it.
+</process>
+
+<success_criteria>
+Prompt content processed and executed successfully.
+</success_criteria>

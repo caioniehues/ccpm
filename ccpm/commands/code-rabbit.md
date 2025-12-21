@@ -1,21 +1,16 @@
 ---
+description: Process CodeRabbit review comments with context-aware discretion
 allowed-tools: Task, Read, Edit, MultiEdit, Write, LS, Grep
 ---
 
-# CodeRabbit Review Handler
+<objective>
+Process CodeRabbit review comments by evaluating them in codebase context and applying valid suggestions.
+</objective>
 
-Process CodeRabbit review comments with context-aware discretion.
+<process>
+**Usage**: `/code-rabbit` then paste CodeRabbit comments.
 
-## Usage
-```
-/code-rabbit
-```
-
-Then paste one or more CodeRabbit comments.
-
-## Instructions
-
-### 1. Initial Context
+**1. Initial Context**
 
 Inform the user:
 ```
@@ -28,18 +23,15 @@ For each comment, I'll:
 - Explain my reasoning for accept/ignore decisions
 ```
 
-### 2. Process Comments
+**2. Process Comments**
 
-#### Single File Comments
-If all comments relate to one file:
+*Single File Comments*:
 - Read the file for context
 - Evaluate each suggestion
 - Apply accepted changes in batch using MultiEdit
 - Report which suggestions were accepted/ignored and why
 
-#### Multiple File Comments
-If comments span multiple files:
-
+*Multiple File Comments*:
 Launch parallel sub-agents using Task tool:
 ```yaml
 Task:
@@ -47,10 +39,10 @@ Task:
   subagent_type: "general-purpose"
   prompt: |
     Review and apply CodeRabbit suggestions for {filename}.
-    
+
     Comments to evaluate:
     {relevant_comments_for_this_file}
-    
+
     Instructions:
     1. Read the file to understand context
     2. For each suggestion:
@@ -62,11 +54,11 @@ Task:
        - Accepted: {list with reasons}
        - Ignored: {list with reasons}
        - Changes made: {brief description}
-    
+
     Use discretion - CodeRabbit lacks full context.
 ```
 
-### 3. Consolidate Results
+**3. Consolidate Results**
 
 After all sub-agents complete:
 ```
@@ -76,32 +68,14 @@ Files Processed: {count}
 
 Accepted Suggestions:
   {file}: {changes_made}
-  
+
 Ignored Suggestions:
   {file}: {reason_ignored}
 
 Overall: {X}/{Y} suggestions applied
 ```
 
-### 4. Common Patterns to Ignore
-
-- **Style preferences** that conflict with project conventions
-- **Generic best practices** that don't apply to our specific use case
-- **Performance optimizations** for code that isn't performance-critical
-- **Accessibility suggestions** for internal tools
-- **Security warnings** for already-validated patterns
-- **Import reorganization** that would break our structure
-
-### 5. Common Patterns to Accept
-
-- **Actual bugs** (null checks, error handling)
-- **Security vulnerabilities** (unless false positive)
-- **Resource leaks** (unclosed connections, memory leaks)
-- **Type safety issues** (TypeScript/type hints)
-- **Logic errors** (off-by-one, incorrect conditions)
-- **Missing error handling** 
-
-## Decision Framework
+**4. Decision Framework**
 
 For each suggestion, consider:
 1. **Is it correct?** - Does the issue actually exist?
@@ -111,10 +85,22 @@ For each suggestion, consider:
 
 Only apply if all answers are "yes" or the benefit clearly outweighs risks.
 
-## Important Notes
+**Patterns to Ignore**:
+- Style preferences conflicting with project conventions
+- Generic best practices not applying to our use case
+- Performance optimizations for non-performance-critical code
+- Import reorganization that would break our structure
 
-- CodeRabbit is helpful but lacks context
-- Trust your understanding of the codebase over generic suggestions
-- Explain decisions briefly to maintain audit trail
-- Batch related changes for efficiency
-- Use parallel agents for multi-file reviews to save time
+**Patterns to Accept**:
+- Actual bugs (null checks, error handling)
+- Security vulnerabilities (unless false positive)
+- Resource leaks (unclosed connections, memory leaks)
+- Type safety issues
+- Logic errors (off-by-one, incorrect conditions)
+</process>
+
+<success_criteria>
+- All comments evaluated with clear accept/ignore reasoning
+- Valid suggestions applied to codebase
+- Summary provided with changes made and suggestions ignored
+</success_criteria>

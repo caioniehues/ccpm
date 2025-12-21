@@ -1,7 +1,8 @@
 # Workflow: Update Context
 
 <process>
-## Step 1: Preflight Validation
+<step_preflight>
+**Preflight Validation**
 
 Complete these validation steps silently:
 
@@ -40,8 +41,10 @@ Dependency Changes:
 **Get Current DateTime:**
 - Run: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 - Store for updating `last_updated` field
+</step_preflight>
 
-## Step 2: Systematic Change Analysis
+<step_change_analysis>
+**Systematic Change Analysis**
 
 Determine which files need updates:
 
@@ -89,8 +92,10 @@ Determine which files need updates:
 - Check: New linting rules, style decisions
 - Update: Convention changes, new patterns adopted
 - Include examples of new patterns
+</step_change_analysis>
 
-## Step 3: Smart Update Strategy
+<step_update_strategy>
+**Smart Update Strategy**
 
 For each file that needs updating:
 
@@ -111,24 +116,30 @@ For each file that needs updating:
    ## Update History
    - {date}: {summary of what changed}
    ```
+</step_update_strategy>
 
-## Step 4: Update Validation
+<step_validation>
+**Update Validation**
 
 After updating each file:
 - Verify frontmatter still valid
 - Check file size reasonable (not corrupted)
 - Ensure markdown formatting preserved
 - Confirm updates accurately reflect changes
+</step_validation>
 
-## Step 5: Skip Optimization
+<step_skip_optimization>
+**Skip Optimization**
 
 **Skip files without changes:**
 - If no relevant changes detected, skip the file
 - Don't update timestamp if content unchanged
 - This preserves accurate "last modified" information
 - Report skipped files in summary
+</step_skip_optimization>
 
-## Step 6: Error Handling
+<step_error_handling>
+**Error Handling**
 
 **Common Issues:**
 - File locked: "❌ Cannot update {file} - may be open in editor"
@@ -140,8 +151,10 @@ If update fails:
 - Report successfully updated files
 - Note failed files and why
 - Preserve original files (don't corrupt)
+</step_error_handling>
 
-## Step 7: Update Summary
+<step_summary>
+**Update Summary**
 
 Provide detailed summary:
 
@@ -171,22 +184,27 @@ Provide detailed summary:
 🔄 Next: Run this operation regularly to keep context current
 💡 Tip: Major changes? Consider running create operation for full refresh
 ```
+</step_summary>
 
-## Step 8: Incremental Update Tracking
+<step_tracking>
+**Incremental Update Tracking**
 
 Track what was updated:
 - Note which sections of each file were modified
 - Keep changes focused and surgical
 - Don't regenerate unchanged content
 - Preserve formatting and structure
+</step_tracking>
 
-## Step 9: Performance Optimization
+<step_performance>
+**Performance Optimization**
 
 For large projects:
 - Process files in parallel when possible
 - Show progress: "Updating context files... {current}/{total}"
 - Skip very large files with warning
 - Use git diff to quickly identify changed areas
+</step_performance>
 </process>
 
 <success_criteria>

@@ -8,28 +8,27 @@ Coordinate Product Requirements Document (PRD) operations including creation thr
 </objective>
 
 <essential_principles>
-## How PRD Management Works
-
+<overview>
 PRDs (Product Requirements Documents) are the foundation of feature development in CCPM. They capture product requirements, user stories, and success criteria before technical implementation.
+</overview>
 
-### PRD Lifecycle
-
+<prd_lifecycle>
 1. **Creation**: Brainstorm and document product requirements through structured discovery
 2. **Editing**: Refine and update PRD sections as requirements evolve
 3. **Parsing**: Convert PRD to technical implementation epic
 4. **Tracking**: Monitor PRD status and progress across the portfolio
+</prd_lifecycle>
 
-### File Structure
-
+<file_structure>
 PRDs are stored in `.claude/prds/{feature-name}.md` with frontmatter:
 - **name**: Feature name (kebab-case)
 - **description**: Brief one-line summary
 - **status**: backlog, in-progress, completed, or on-hold
 - **created**: ISO 8601 datetime
 - **updated**: ISO 8601 datetime (when edited)
+</file_structure>
 
-### PRD Sections
-
+<prd_sections>
 Complete PRDs include:
 - Executive Summary
 - Problem Statement
@@ -39,10 +38,11 @@ Complete PRDs include:
 - Constraints & Assumptions
 - Out of Scope (explicit exclusions)
 - Dependencies
+</prd_sections>
 
-### Relationship to Epics
-
+<relationship_to_epics>
 PRDs describe WHAT to build and WHY. Epics describe HOW to build it technically. Use `/pm:prd-parse` to generate an epic from a PRD.
+</relationship_to_epics>
 </essential_principles>
 
 <intake>
@@ -70,36 +70,44 @@ What would you like to do with PRDs?
 </routing>
 
 <operation_details>
-## Available Operations
-
+<operation name="create">
 **Create New PRD** (`/pm:prd-new <feature_name>`)
 - Validates feature name format (kebab-case)
 - Checks for existing PRD
 - Conducts structured brainstorming session
 - Creates comprehensive PRD with all required sections
 - Saves to `.claude/prds/{feature-name}.md`
+</operation>
 
+<operation name="edit">
 **Edit PRD** (`/pm:prd-edit <feature_name>`)
 - Reads current PRD
 - Allows selective section editing
 - Updates timestamp
 - Checks for associated epic impact
+</operation>
 
+<operation name="parse">
 **Parse to Epic** (`/pm:prd-parse <feature_name>`)
 - Reads PRD requirements
 - Performs technical analysis
 - Creates implementation epic at `.claude/epics/{feature-name}/epic.md`
 - Maps product requirements to technical approach
 - Suggests task breakdown
+</operation>
 
+<operation name="list">
 **List PRDs** (`/pm:prd-list`)
 - Shows all PRDs with status
 - Displays created/updated dates
 - Organized by status
+</operation>
 
+<operation name="status">
 **Status Report** (`/pm:prd-status`)
 - Shows count by status (backlog, in-progress, completed, on-hold)
 - Portfolio overview
+</operation>
 </operation_details>
 
 <quick_start>

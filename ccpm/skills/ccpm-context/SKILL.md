@@ -3,13 +3,16 @@ name: ccpm-context
 description: Manages project context for CCPM by creating, updating, and priming context documentation in .claude/context/. Use when working with project context, establishing baseline documentation, or loading context for new sessions.
 ---
 
+<objective>
+Manage conversation context files for CCPM workflows including creation, priming, and updates of project documentation in `.claude/context/`.
+</objective>
+
 <essential_principles>
-## How Context Management Works
-
+<overview>
 Context management in CCPM maintains comprehensive project documentation that helps Claude understand your project's current state, architecture, and progress.
+</overview>
 
-### Context Structure
-
+<context_structure>
 Context files live in `.claude/context/` and include:
 - **progress.md** - Current status, recent work, next steps
 - **project-structure.md** - Directory organization and file patterns
@@ -20,9 +23,9 @@ Context files live in `.claude/context/` and include:
 - **project-overview.md** - Feature summary and capabilities
 - **project-vision.md** - Long-term direction and strategy
 - **project-style-guide.md** - Coding standards and conventions
+</context_structure>
 
-### Frontmatter Requirements
-
+<frontmatter_requirements>
 All context files MUST include frontmatter with real datetime:
 ```yaml
 ---
@@ -32,20 +35,21 @@ version: 1.0
 author: Claude Code PM System
 ---
 ```
+</frontmatter_requirements>
 
-### Context Lifecycle
-
+<context_lifecycle>
 1. **Create** - Establish initial baseline documentation by analyzing current project state
 2. **Prime** - Load essential context for new agent sessions to understand the project
 3. **Update** - Refresh context to reflect current state (run regularly, especially after significant changes)
+</context_lifecycle>
 
-### Key Principles
-
+<key_principles>
 - **Always use real datetime** from system clock (`date -u +"%Y-%m-%dT%H:%M:%SZ"`)
 - **Validate before proceeding** - Check for existing context, permissions, git status
 - **Handle errors gracefully** - Provide specific guidance when issues occur
 - **Make surgical updates** - Don't regenerate entire files unnecessarily
 - **Preserve accurate timestamps** - Only update `last_updated` when content actually changes
+</key_principles>
 </essential_principles>
 
 <intake>
@@ -77,6 +81,21 @@ author: Claude Code PM System
 | prime-context.md | Load essential context for new agent session by reading existing documentation |
 | update-context.md | Update context to reflect current project state based on recent changes |
 </workflows_index>
+
+<quick_start>
+**Quick start:**
+
+```bash
+# Load context for a new session
+/pm:context prime
+
+# Create initial context documentation
+/pm:context create
+
+# Update context after changes
+/pm:context update
+```
+</quick_start>
 
 <success_criteria>
 Context management is successful when:

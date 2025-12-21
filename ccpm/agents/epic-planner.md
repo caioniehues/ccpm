@@ -27,7 +27,7 @@ assistant: "I'll invoke the epic-planner agent to analyze the epic scope and cre
 Since this involves epic scope analysis and planning, use the Task tool with epic-planner.
 </commentary>
 </example>
-tools: Glob, Grep, Read, Write, TodoWrite, Task, Agent
+tools: Glob, Grep, Read, Write, TodoWrite
 model: inherit
 color: blue
 ---

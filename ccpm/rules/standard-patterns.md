@@ -27,7 +27,7 @@ Only check what's absolutely necessary:
 ```markdown
 Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 ```
-Don't repeat full instructions - just reference `/rules/datetime.md` once.
+Don't repeat full instructions - just reference `shared-references/datetime.md` once.
 
 ### Error Messages
 Keep them short and actionable:

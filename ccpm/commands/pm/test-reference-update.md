@@ -1,66 +1,57 @@
 ---
+description: Test the task reference update logic used in epic-sync
 allowed-tools: Bash, Read, Write
 ---
 
-# Test Reference Update
+<objective>
+Test the task reference update logic that updates task IDs after GitHub issue creation.
+</objective>
 
-Test the task reference update logic used in epic-sync.
+<process>
+**Usage**: `/pm:test-reference-update`
 
-## Usage
-```
-/pm:test-reference-update
-```
-
-## Instructions
-
-### 1. Create Test Files
+**1. Create Test Files**
 
 Create test task files with references:
 ```bash
 mkdir -p /tmp/test-refs
 cd /tmp/test-refs
 
-# Create task 001
+# Create task 001 with conflicts_with references
 cat > 001.md << 'EOF'
 ---
 name: Task One
 status: open
 depends_on: []
-parallel: true
 conflicts_with: [002, 003]
 ---
 # Task One
-This is task 001.
 EOF
 
-# Create task 002
+# Create task 002 with depends_on reference
 cat > 002.md << 'EOF'
 ---
 name: Task Two
 status: open
 depends_on: [001]
-parallel: false
 conflicts_with: [003]
 ---
 # Task Two
-This is task 002, depends on 001.
 EOF
 
-# Create task 003
+# Create task 003 with multiple depends_on
 cat > 003.md << 'EOF'
 ---
 name: Task Three
 status: open
 depends_on: [001, 002]
-parallel: false
 conflicts_with: []
 ---
 # Task Three
-This is task 003, depends on 001 and 002.
 EOF
 ```
 
-### 2. Create Mappings
+**2. Create Mappings**
 
 Simulate the issue creation mappings:
 ```bash
@@ -77,37 +68,23 @@ while IFS=: read -r task_file task_number; do
   old_num=$(basename "$task_file" .md)
   echo "$old_num:$task_number" >> /tmp/id-mapping.txt
 done < /tmp/task-mapping.txt
-
-echo "ID Mapping:"
-cat /tmp/id-mapping.txt
 ```
 
-### 3. Update References
+**3. Update References**
 
-Process each file and update references:
+Process each file and update references using sed:
 ```bash
 while IFS=: read -r task_file task_number; do
-  echo "Processing: $task_file -> $task_number.md"
-  
-  # Read the file content
   content=$(cat "$task_file")
-  
-  # Update references
   while IFS=: read -r old_num new_num; do
     content=$(echo "$content" | sed "s/\b$old_num\b/$new_num/g")
   done < /tmp/id-mapping.txt
-  
-  # Write to new file
   new_name="${task_number}.md"
   echo "$content" > "$new_name"
-  
-  echo "Updated content preview:"
-  grep -E "depends_on:|conflicts_with:" "$new_name"
-  echo "---"
 done < /tmp/task-mapping.txt
 ```
 
-### 4. Verify Results
+**4. Verify Results**
 
 Check that references were updated correctly:
 ```bash
@@ -115,7 +92,6 @@ echo "=== Final Results ==="
 for file in 42.md 43.md 44.md; do
   echo "File: $file"
   grep -E "name:|depends_on:|conflicts_with:" "$file"
-  echo ""
 done
 ```
 
@@ -124,7 +100,7 @@ Expected output:
 - 43.md should have depends_on: [42] and conflicts_with: [44]
 - 44.md should have depends_on: [42, 43]
 
-### 5. Cleanup
+**5. Cleanup**
 
 ```bash
 cd -
@@ -132,3 +108,11 @@ rm -rf /tmp/test-refs
 rm -f /tmp/task-mapping.txt /tmp/id-mapping.txt
 echo "✅ Test complete and cleaned up"
 ```
+</process>
+
+<success_criteria>
+- Test files created with cross-references
+- ID mapping generated correctly
+- References updated from local IDs to GitHub issue numbers
+- Cleanup completed without errors
+</success_criteria>

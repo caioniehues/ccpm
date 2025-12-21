@@ -1,26 +1,31 @@
-# Workflow: Analyze Issue for Parallel Work Streams
+---
+allowed-tools: Bash, Read, Write, LS
+---
 
-<required_reading>
-**Read these reference files NOW:**
-1. references/frontmatter-operations.md
-2. references/datetime-handling.md
-3. references/parallel-work.md
-</required_reading>
+# Analyze Issue for Parallel Work Streams
 
-<process>
-## Step 1: Validate Issue Exists
+Analyze an issue to identify parallel work streams for maximum efficiency.
 
-Find local task file:
-- First check if `.claude/epics/*/$ARGUMENTS.md` exists (new naming convention)
-- If not found, search for file containing `github:.*issues/$ARGUMENTS` in frontmatter (old naming)
-- If not found: "❌ No local task for issue #$ARGUMENTS. Run: /pm:import first"
-
-Check for existing analysis:
-```bash
-test -f .claude/epics/*/$ARGUMENTS-analysis.md && echo "⚠️ Analysis already exists. Overwrite? (yes/no)"
+## Usage
+```
+/issue:analyze <issue_number>
 ```
 
-## Step 2: Gather Issue Context
+## Quick Check
+
+1. **Find local task file:**
+   - First check if `.claude/epics/*/$ARGUMENTS.md` exists (new naming convention)
+   - If not found, search for file containing `github:.*issues/$ARGUMENTS` in frontmatter (old naming)
+   - If not found: "❌ No local task for issue #$ARGUMENTS. Run: /pm:import first"
+
+2. **Check for existing analysis:**
+   ```bash
+   test -f .claude/epics/*/$ARGUMENTS-analysis.md && echo "⚠️ Analysis already exists. Overwrite? (yes/no)"
+   ```
+
+## Instructions
+
+### 1. Read Issue Context
 
 Get issue details from GitHub:
 ```bash
@@ -33,11 +38,11 @@ Read local task file to understand:
 - Dependencies
 - Effort estimate
 
-## Step 3: Identify Parallel Work Streams
+### 2. Identify Parallel Work Streams
 
-Analyze the issue to identify independent work that can run in parallel:
+Analyze the issue to identify independent work that can run in parallel.
 
-**Common Patterns:**
+**Common Patterns (see references/parallel-streams.md):**
 - **Database Layer**: Schema, migrations, models
 - **Service Layer**: Business logic, data access
 - **API Layer**: Endpoints, validation, middleware
@@ -51,9 +56,9 @@ Analyze the issue to identify independent work that can run in parallel:
 - What are the dependencies between changes?
 - Where might conflicts occur?
 
-## Step 4: Create Analysis File
+### 3. Create Analysis File
 
-Get current datetime following references/datetime-handling.md
+Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 
 Create `.claude/epics/{epic_name}/$ARGUMENTS-analysis.md`:
 
@@ -88,7 +93,7 @@ parallelization_factor: {1.0-5.0}
 **Files**:
 - {file_pattern_1}
 - {file_pattern_2}
-**Agent Type**: {agent_type}
+**Agent Type**: code-analyzer
 **Can Start**: immediately
 **Estimated Hours**: {hours}
 **Dependencies**: none
@@ -97,7 +102,7 @@ parallelization_factor: {1.0-5.0}
 **Scope**: {What this stream handles}
 **Files**:
 - {file_pattern_1}
-**Agent Type**: {agent_type}
+**Agent Type**: code-analyzer
 **Can Start**: after Stream A completes
 **Estimated Hours**: {hours}
 **Dependencies**: Stream A
@@ -107,8 +112,7 @@ parallelization_factor: {1.0-5.0}
 ### Shared Files
 {List any files multiple streams need to modify}:
 - `src/types/index.ts` - Streams A & B (coordinate type updates)
-- Project configuration files (package.json, pom.xml, Cargo.toml, etc.) - Stream B (add dependencies)
-- Build configuration files (build.gradle, CMakeLists.txt, etc.) - Stream C (build system changes)
+- Project configuration files - Stream B (add dependencies)
 
 ### Sequential Requirements
 {List what must happen in order}:
@@ -143,7 +147,7 @@ Without parallel execution:
 {Any special considerations, warnings, or recommendations}
 ```
 
-## Step 5: Validate Analysis
+### 4. Validate Analysis
 
 Ensure:
 - All major work is covered by streams
@@ -152,7 +156,7 @@ Ensure:
 - Agent types match the work type
 - Time estimates are reasonable
 
-## Step 6: Output Summary
+### 5. Output
 
 ```
 ✅ Analysis complete for issue #$ARGUMENTS
@@ -169,17 +173,15 @@ Parallelization potential: {factor}x speedup
 Files at risk of conflict:
   {list shared files if any}
 
-Next: Start work with /pm:issue-start $ARGUMENTS
+Next: Start work with /issue:start $ARGUMENTS
 ```
-</process>
 
-<success_criteria>
-Analysis is complete when:
-- [ ] Analysis file created at `.claude/epics/{epic}/$ARGUMENTS-analysis.md`
-- [ ] All parallel streams identified with clear scope
-- [ ] Dependencies between streams documented
-- [ ] Agent types assigned appropriately
-- [ ] Coordination points and conflict risks assessed
-- [ ] Timeline estimates provided for parallel vs sequential execution
-- [ ] User informed of next steps
-</success_criteria>
+## Important Notes
+
+- Analysis is local only - not synced to GitHub
+- Focus on practical parallelization, not theoretical maximum
+- Consider agent expertise when assigning streams
+- Account for coordination overhead in estimates
+- Prefer clear separation over maximum parallelization
+
+$ARGUMENTS

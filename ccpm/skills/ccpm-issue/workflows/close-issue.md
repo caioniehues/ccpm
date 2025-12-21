@@ -1,39 +1,42 @@
-# Workflow: Close Issue
+---
+allowed-tools: Bash, Read, Write, LS
+---
 
-<required_reading>
-**Read these reference files NOW:**
-1. references/frontmatter-operations.md
-2. references/datetime-handling.md
-3. references/github-sync.md
-4. references/epic-integration.md
-5. references/progress-tracking.md
-</required_reading>
+# Close Issue
 
-<process>
-## Step 1: Find Local Task File
+Mark an issue as complete and close it on GitHub.
+
+## Usage
+```
+/issue:close <issue_number> [completion_notes]
+```
+
+## Instructions
+
+### 1. Find Local Task File
 
 First check if `.claude/epics/*/$ARGUMENTS.md` exists (new naming).
 If not found, search for task file with `github:.*issues/$ARGUMENTS` in frontmatter (old naming).
 If not found: "❌ No local task for issue #$ARGUMENTS"
 
-## Step 2: Update Local Status
+### 2. Update Local Status
 
-Get current datetime following references/datetime-handling.md
+Get current datetime: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 
-Update task file frontmatter following references/frontmatter-operations.md:
+Update task file frontmatter:
 ```yaml
 status: closed
 updated: {current_datetime}
 ```
 
-## Step 3: Update Progress File
+### 3. Update Progress File
 
 If progress file exists at `.claude/epics/{epic}/updates/$ARGUMENTS/progress.md`:
 - Set completion: 100%
 - Add completion note with timestamp
 - Update last_sync with current datetime
 
-## Step 4: Close on GitHub
+### 4. Close on GitHub
 
 Add completion comment and close:
 ```bash
@@ -49,7 +52,7 @@ Closed at: {timestamp}" | gh issue comment $ARGUMENTS --body-file -
 gh issue close $ARGUMENTS
 ```
 
-## Step 5: Update Epic Task List on GitHub
+### 5. Update Epic Task List on GitHub
 
 Check the task checkbox in the epic issue:
 
@@ -74,15 +77,14 @@ if [ ! -z "$epic_issue" ]; then
 fi
 ```
 
-## Step 6: Update Epic Progress
+### 6. Update Epic Progress
 
-Following references/epic-integration.md:
 - Count total tasks in epic
 - Count closed tasks
 - Calculate new progress percentage
 - Update epic.md frontmatter progress field
 
-## Step 7: Output Summary
+### 7. Output
 
 ```
 ✅ Closed issue #$ARGUMENTS
@@ -92,17 +94,11 @@ Following references/epic-integration.md:
 
 Next: Run /pm:next for next priority task
 ```
-</process>
 
-<success_criteria>
-Issue close is complete when:
-- [ ] Local task file found
-- [ ] Task file frontmatter updated with status: closed
-- [ ] Progress file updated with 100% completion
-- [ ] Completion comment posted to GitHub
-- [ ] Issue closed on GitHub
-- [ ] Epic task list updated on GitHub
-- [ ] Epic progress recalculated and updated
-- [ ] User informed with summary
-- [ ] All timestamps are real datetimes (not placeholders)
-</success_criteria>
+## Important Notes
+
+Follow `shared-references/frontmatter-operations.md` for updates.
+Follow `shared-references/github-operations.md` for GitHub commands.
+Always sync local state before GitHub.
+
+$ARGUMENTS

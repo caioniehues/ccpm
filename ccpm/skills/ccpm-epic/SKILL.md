@@ -3,11 +3,12 @@ name: ccpm-epic
 description: Manages epic lifecycle for CCPM including planning (decompose), execution (start, status), tracking (show, refresh), and completion (close, merge). Coordinates epic creation from PRDs, task decomposition, GitHub synchronization, and parallel agent execution. Use when working with epics, PRDs, or coordinating multi-task development workflows.
 ---
 
+<objective>
+Manage epic lifecycle from planning through completion including PRD parsing, task decomposition, GitHub synchronization, parallel agent execution, and branch management.
+</objective>
+
 <essential_principles>
-## How Epic Management Works
-
-### Epic Lifecycle
-
+<epic_lifecycle>
 Epics in CCPM follow a structured lifecycle:
 1. **Create**: Parse PRD into epic structure
 2. **Decompose**: Break epic into actionable tasks
@@ -15,9 +16,9 @@ Epics in CCPM follow a structured lifecycle:
 4. **Start**: Launch parallel agents to work on tasks
 5. **Track**: Monitor progress and update status
 6. **Complete**: Close epic and merge changes
+</epic_lifecycle>
 
-### Key Concepts
-
+<key_concepts>
 **Epic Directory Structure**:
 ```
 .claude/epics/{epic-name}/
@@ -42,6 +43,7 @@ Epics in CCPM follow a structured lifecycle:
 - Each epic gets its own branch: `epic/{epic-name}`
 - All agents work in the same epic branch (not separate branches)
 - Branch created during sync, used during start
+</key_concepts>
 </essential_principles>
 
 <intake>
@@ -89,35 +91,40 @@ Provide the operation name or number, optionally with epic name.
 </routing>
 
 <command_reference>
-## Available Epic Commands
-
 All commands are in `ccpm/commands/pm/`:
 
+<command_group name="planning">
 **Planning & Setup**:
 - `/pm:prd-parse {epic_name}` - Create epic from PRD
 - `/pm:epic-decompose {epic_name}` - Break into tasks
 - `/pm:epic-sync {epic_name}` - Push to GitHub
 - `/pm:epic-oneshot {epic_name}` - Decompose + sync together
+</command_group>
 
+<command_group name="execution">
 **Execution**:
 - `/pm:epic-start {epic_name}` - Launch parallel agents
 - `/pm:epic-start-worktree {epic_name}` - Create worktree
+</command_group>
 
+<command_group name="tracking">
 **Tracking & Updates**:
 - `/pm:epic-list` - List all epics
 - `/pm:epic-show {epic_name}` - Show epic details
 - `/pm:epic-status {epic_name}` - Show task breakdown
 - `/pm:epic-refresh {epic_name}` - Update progress
+</command_group>
 
+<command_group name="maintenance">
 **Maintenance**:
 - `/pm:epic-edit {epic_name}` - Edit epic details
 - `/pm:epic-close {epic_name}` - Mark as complete
 - `/pm:epic-merge {epic_name}` - Merge to main
+</command_group>
 </command_reference>
 
 <workflow_patterns>
-## Common Epic Workflows
-
+<workflow_pattern name="full_lifecycle">
 **New Epic (Full Lifecycle)**:
 ```
 1. /pm:prd-parse {epic_name}      # Create epic from PRD
@@ -129,14 +136,18 @@ All commands are in `ccpm/commands/pm/`:
 7. /pm:epic-close {epic_name}      # Mark complete
 8. /pm:epic-merge {epic_name}      # Merge to main
 ```
+</workflow_pattern>
 
+<workflow_pattern name="quick_start">
 **Quick Start (Oneshot)**:
 ```
 1. /pm:prd-parse {epic_name}       # Create epic from PRD
 2. /pm:epic-oneshot {epic_name}    # Decompose + sync together
 3. /pm:epic-start {epic_name}      # Launch agents
 ```
+</workflow_pattern>
 
+<workflow_pattern name="monitoring">
 **Monitoring Existing Epic**:
 ```
 /pm:epic-list                      # See all epics
@@ -144,7 +155,9 @@ All commands are in `ccpm/commands/pm/`:
 /pm:epic-status {epic_name}        # Check task breakdown
 /pm:epic-refresh {epic_name}       # Update from GitHub
 ```
+</workflow_pattern>
 
+<workflow_pattern name="manual_work">
 **Manual Work (No Agents)**:
 ```
 1. /pm:epic-oneshot {epic_name}    # Decompose + sync
@@ -153,7 +166,26 @@ All commands are in `ccpm/commands/pm/`:
 4. /pm:epic-refresh {epic_name}    # Update progress
 5. /pm:epic-close {epic_name}      # When done
 ```
+</workflow_pattern>
 </workflow_patterns>
+
+<quick_start>
+**Quick start:**
+
+```bash
+# Create epic from PRD
+/pm:prd-parse my-feature
+
+# Decompose + sync to GitHub in one step
+/pm:epic-oneshot my-feature
+
+# Launch parallel agents to work on epic
+/pm:epic-start my-feature
+
+# Check epic progress
+/pm:epic-status my-feature
+```
+</quick_start>
 
 <success_criteria>
 This skill successfully routes requests when:

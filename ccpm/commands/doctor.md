@@ -8,9 +8,8 @@ Diagnose CCPM installation health by checking dependencies, configuration, and p
 </objective>
 
 <process>
-## Health Check Sequence
+**1. Core Dependencies**
 
-### 1. Core Dependencies
 Check required tools are installed:
 
 ```
@@ -19,7 +18,8 @@ Check required tools are installed:
 !`gh auth status 2>&1 | grep -q "Logged in" && echo "✅ gh authenticated" || echo "⚠️ gh not authenticated"`
 ```
 
-### 2. Project Structure
+**2. Project Structure**
+
 Verify CCPM directories exist:
 
 ```
@@ -29,7 +29,8 @@ Verify CCPM directories exist:
 !`test -d .claude/context && echo "✅ context directory exists" || echo "⚠️ context directory missing"`
 ```
 
-### 3. Git Repository
+**3. Git Repository**
+
 Check git status:
 
 ```
@@ -37,7 +38,8 @@ Check git status:
 !`git remote -v 2>/dev/null | head -1 || echo "⚠️ no remote configured"`
 ```
 
-### 4. CCPM Installation
+**4. CCPM Installation**
+
 Verify CCPM files:
 
 ```
@@ -46,7 +48,8 @@ Verify CCPM files:
 !`ls ccpm/scripts/pm/*.sh 2>/dev/null | wc -l | xargs -I {} echo "📁 {} PM scripts found"`
 ```
 
-### 5. Summary
+**5. Summary**
+
 Report overall health status based on checks above.
 </process>
 

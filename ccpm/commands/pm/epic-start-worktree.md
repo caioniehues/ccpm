@@ -1,40 +1,36 @@
 ---
+description: Launch parallel agents to work on epic tasks in a shared worktree
+argument-hint: <epic_name>
 allowed-tools: Bash, Read, Write, LS, Task
 ---
 
-# Epic Start
+<objective>
+Start parallel execution of epic tasks by creating a worktree and launching coordinated agents.
+</objective>
 
-Launch parallel agents to work on epic tasks in a shared worktree.
+<process>
+**Usage**: `/pm:epic-start <epic_name>`
 
-## Usage
+**1. Quick Check**
+
+Verify epic exists:
+```bash
+test -f .claude/epics/$ARGUMENTS/epic.md || echo "❌ Epic not found. Run: /pm:prd-parse $ARGUMENTS"
 ```
-/pm:epic-start <epic_name>
+
+Check GitHub sync (look for `github:` field in epic frontmatter).
+If missing: "❌ Epic not synced. Run: /pm:epic-sync $ARGUMENTS first"
+
+Check for worktree:
+```bash
+git worktree list | grep "epic-$ARGUMENTS"
 ```
 
-## Quick Check
+**2. Create or Enter Worktree**
 
-1. **Verify epic exists:**
-   ```bash
-   test -f .claude/epics/$ARGUMENTS/epic.md || echo "❌ Epic not found. Run: /pm:prd-parse $ARGUMENTS"
-   ```
-
-2. **Check GitHub sync:**
-   Look for `github:` field in epic frontmatter.
-   If missing: "❌ Epic not synced. Run: /pm:epic-sync $ARGUMENTS first"
-
-3. **Check for worktree:**
-   ```bash
-   git worktree list | grep "epic-$ARGUMENTS"
-   ```
-
-## Instructions
-
-### 1. Create or Enter Worktree
-
-Follow `/rules/worktree-operations.md`:
+Follow `shared-references/worktree-operations.md`:
 
 ```bash
-# If worktree doesn't exist, create it
 if ! git worktree list | grep -q "epic-$ARGUMENTS"; then
   git checkout main
   git pull origin main
@@ -45,7 +41,7 @@ else
 fi
 ```
 
-### 2. Identify Ready Issues
+**3. Identify Ready Issues**
 
 Read all task files in `.claude/epics/$ARGUMENTS/`:
 - Parse frontmatter for `status`, `depends_on`, `parallel` fields
@@ -58,115 +54,62 @@ Categorize issues:
 - **In Progress**: Already being worked on
 - **Complete**: Finished
 
-### 3. Analyze Ready Issues
+**4. Analyze Ready Issues**
 
 For each ready issue without analysis:
 ```bash
-# Check for analysis
 if ! test -f .claude/epics/$ARGUMENTS/{issue}-analysis.md; then
   echo "Analyzing issue #{issue}..."
-  # Run analysis (inline or via Task tool)
 fi
 ```
 
-### 4. Launch Parallel Agents
+**5. Launch Parallel Agents**
 
-For each ready issue with analysis:
-
-```markdown
-## Starting Issue #{issue}: {title}
-
-Reading analysis...
-Found {count} parallel streams:
-  - Stream A: {description} (Agent-{id})
-  - Stream B: {description} (Agent-{id})
-
-Launching agents in worktree: ../epic-$ARGUMENTS/
-```
-
-Use Task tool to launch each stream:
+For each ready issue with analysis, use Task tool:
 ```yaml
 Task:
   description: "Issue #{issue} Stream {X}"
-  subagent_type: "{agent_type}"
+  subagent_type: "parallel-worker"
   prompt: |
     Working in worktree: ../epic-$ARGUMENTS/
     Issue: #{issue} - {title}
     Stream: {stream_name}
-
     Your scope:
     - Files: {file_patterns}
     - Work: {stream_description}
-
     Read full requirements from:
     - .claude/epics/$ARGUMENTS/{task_file}
     - .claude/epics/$ARGUMENTS/{issue}-analysis.md
-
-    Follow coordination rules in /rules/agent-coordination.md
-
-    Commit frequently with message format:
-    "Issue #{issue}: {specific change}"
-
-    Update progress in:
-    .claude/epics/$ARGUMENTS/updates/{issue}/stream-{X}.md
+    Follow coordination rules in shared-references/agent-coordination.md
+    Commit frequently with message format: "Issue #{issue}: {specific change}"
 ```
 
-### 5. Track Active Agents
+**6. Track Active Agents**
 
-Create/update `.claude/epics/$ARGUMENTS/execution-status.md`:
+Create/update `.claude/epics/$ARGUMENTS/execution-status.md` with:
+- Active agents and their assignments
+- Queued issues waiting on dependencies
+- Completed work
 
-```markdown
----
-started: {datetime}
-worktree: ../epic-$ARGUMENTS
-branch: epic/$ARGUMENTS
----
+**7. Monitor and Coordinate**
 
-# Execution Status
-
-## Active Agents
-- Agent-1: Issue #1234 Stream A (Database) - Started {time}
-- Agent-2: Issue #1234 Stream B (API) - Started {time}
-- Agent-3: Issue #1235 Stream A (UI) - Started {time}
-
-## Queued Issues
-- Issue #1236 - Waiting for #1234
-- Issue #1237 - Waiting for #1235
-
-## Completed
-- {None yet}
 ```
-
-### 6. Monitor and Coordinate
-
-Set up monitoring:
-```bash
-echo "
 Agents launched successfully!
 
-Monitor progress:
-  /pm:epic-status $ARGUMENTS
-
-View worktree changes:
-  cd ../epic-$ARGUMENTS && git status
-
-Stop all agents:
-  /pm:epic-stop $ARGUMENTS
-
-Merge when complete:
-  /pm:epic-merge $ARGUMENTS
-"
+Monitor progress: /pm:epic-status $ARGUMENTS
+View worktree changes: cd ../epic-$ARGUMENTS && git status
+Stop all agents: /pm:epic-stop $ARGUMENTS
+Merge when complete: /pm:epic-merge $ARGUMENTS
 ```
 
-### 7. Handle Dependencies
+**8. Handle Dependencies**
 
 As agents complete streams:
 - Check if any blocked issues are now ready
 - Launch new agents for newly-ready work
 - Update execution-status.md
 
-## Output Format
-
+**Output Format**:
 ```
 🚀 Epic Execution Started: $ARGUMENTS
 
@@ -179,43 +122,21 @@ Issue #1234: Database Schema
   ├─ Stream A: Schema creation (Agent-1) ✓ Started
   └─ Stream B: Migrations (Agent-2) ✓ Started
 
-Issue #1235: API Endpoints
-  ├─ Stream A: User endpoints (Agent-3) ✓ Started
-  ├─ Stream B: Post endpoints (Agent-4) ✓ Started
-  └─ Stream C: Tests (Agent-5) ⏸ Waiting for A & B
-
 Blocked Issues (2):
   - #1236: UI Components (depends on #1234)
-  - #1237: Integration (depends on #1235, #1236)
 
 Monitor with: /pm:epic-status $ARGUMENTS
 ```
 
-## Error Handling
+**Error Handling**:
+- If agent launch fails, report and offer to continue with others
+- If worktree creation fails, suggest `git worktree prune`
+</process>
 
-If agent launch fails:
-```
-❌ Failed to start Agent-{id}
-  Issue: #{issue}
-  Stream: {stream}
-  Error: {reason}
-
-Continue with other agents? (yes/no)
-```
-
-If worktree creation fails:
-```
-❌ Cannot create worktree
-  {git error message}
-
-Try: git worktree prune
-Or: Check existing worktrees with: git worktree list
-```
-
-## Important Notes
-
-- Follow `/rules/worktree-operations.md` for git operations
-- Follow `/rules/agent-coordination.md` for parallel work
-- Agents work in the SAME worktree (not separate ones)
-- Maximum parallel agents should be reasonable (e.g., 5-10)
-- Monitor system resources if launching many agents
+<success_criteria>
+- Worktree created or verified
+- Ready issues identified and analyzed
+- Parallel agents launched for ready work
+- Execution status tracked
+- Monitoring instructions provided
+</success_criteria>

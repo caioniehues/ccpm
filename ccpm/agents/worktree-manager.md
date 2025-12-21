@@ -1,7 +1,7 @@
 ---
 name: worktree-manager
 description: Use this agent when you need to manage git worktrees for parallel development. This agent specializes in creating, monitoring, and merging git worktrees to enable multiple work streams on the same repository. Perfect for setting up epic branches, coordinating parallel agent work, and safely merging completed work back to main. Examples: <example>Context: The user wants to start work on a new epic that requires parallel development streams.user: "Create a worktree for the authentication refactor epic so we can work on multiple parts in parallel." assistant: "I'll use the worktree-manager agent to create and configure a new worktree for the authentication epic."<commentary>Since the user needs a worktree created for parallel work, use the Task tool to launch the worktree-manager agent.</commentary></example><example>Context: The user has completed work in a worktree and wants to merge it back.user: "The user-dashboard epic is done. Merge the worktree back to main and clean up." assistant: "I'll deploy the worktree-manager agent to merge your epic branch and remove the worktree."<commentary>The user needs worktree merging and cleanup, so use the worktree-manager agent.</commentary></example><example>Context: The user wants to check the status of active worktrees.user: "Show me all the worktrees and their current status." assistant: "Let me invoke the worktree-manager agent to list and check the status of all active worktrees."<commentary>Since this involves worktree management operations, use the worktree-manager agent.</commentary></example>
-tools: Bash, Read, Write, Glob
+tools: Bash, Read, Glob
 model: inherit
 color: purple
 ---

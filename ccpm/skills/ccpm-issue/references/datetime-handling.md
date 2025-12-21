@@ -11,7 +11,7 @@ Always execute the datetime command to get the real current time.
 </critical_rule>
 
 <getting_current_datetime>
-## Get Current Datetime
+**Get Current Datetime**
 
 **Standard command:**
 ```bash
@@ -35,7 +35,7 @@ sed -i "s/^updated: .*/updated: $datetime/" file.md
 </getting_current_datetime>
 
 <iso_8601_format>
-## ISO 8601 Format
+**ISO 8601 Format**
 
 **Structure:**
 ```
@@ -60,7 +60,7 @@ YYYY-MM-DDTHH:MM:SSZ
 </iso_8601_format>
 
 <usage_patterns>
-## Common Usage Patterns
+**Common Usage Patterns**
 
 **Update task file:**
 ```bash
@@ -101,7 +101,7 @@ Completed at: $datetime"
 </usage_patterns>
 
 <validation>
-## Validate Datetime Format
+**Validate Datetime Format**
 
 **Check if datetime is valid ISO 8601:**
 ```bash
@@ -127,7 +127,7 @@ fi
 </validation>
 
 <timezone_handling>
-## Timezone Handling
+**Timezone Handling**
 
 **Always use UTC:**
 CCPM standardizes on UTC (indicated by `Z` suffix) to avoid timezone confusion.
@@ -154,7 +154,7 @@ echo "Synced at: $local_time (stored as: $utc_time)"
 </timezone_handling>
 
 <common_mistakes>
-## Common Mistakes
+**Common Mistakes**
 
 **❌ Using placeholders:**
 ```bash
