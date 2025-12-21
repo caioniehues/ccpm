@@ -1,5 +1,7 @@
 ---
-allowed-tools: Bash, Read, Write, LS
+description: Import existing GitHub issues into the PM system
+argument-hint: "[--epic <epic_name>] [--label <label>]"
+allowed-tools: Bash, Read, Write, Glob
 ---
 
 # Import
