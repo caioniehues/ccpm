@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/next.sh)
+description: List next available tasks ready to be worked on
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/next.sh

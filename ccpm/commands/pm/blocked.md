@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/blocked.sh)
+description: List all blocked tasks across epics
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/blocked.sh

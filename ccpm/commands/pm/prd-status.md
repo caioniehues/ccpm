@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/prd-status.sh)
+description: Show PRD status report with counts by status
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/prd-status.sh

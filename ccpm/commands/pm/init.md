@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(bash ccpm/scripts/pm/init.sh)
+description: Initialize CCPM project management system
+allowed-tools: Bash
 ---
 
-Output:
 !bash ccpm/scripts/pm/init.sh
