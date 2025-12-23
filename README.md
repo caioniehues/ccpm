@@ -37,6 +37,7 @@ Stop losing context. Stop blocking on tasks. Stop shipping bugs. This battle-tes
 - [Example Flow](#example-flow)
 - [Get Started Now](#get-started-now)
 - [Local vs Remote](#local-vs-remote)
+- [TUI Dashboard (Beta)](#tui-dashboard-beta)
 - [Technical Notes](#technical-notes)
 - [Support This Project](#support-this-project)
 
@@ -228,6 +229,7 @@ Specialized agents implement tasks while maintaining progress updates and an aud
 - `/pm:prd-status` - Show PRD implementation status
 
 ### Epic Commands
+- `/pm:epic-wizard` - **NEW** Guided epic creation with approval gates
 - `/pm:epic-decompose` - Break epic into task files
 - `/pm:epic-sync` - Push epic and tasks to GitHub
 - `/pm:epic-oneshot` - Decompose and sync in one command
@@ -463,6 +465,40 @@ Watch as structured planning transforms into shipped code.
 | Execution | ✅ | — |
 | Status Updates | ✅ | ✅ (sync) |
 | Final Deliverables | — | ✅ |
+
+## TUI Dashboard (Beta)
+
+A terminal-based visual dashboard is now available for real-time epic and task tracking.
+
+### Features
+- **Visual epic/task overview** - See all your work at a glance
+- **Keyboard navigation** - Fast, mouse-free interaction
+- **Real-time updates** - Watch progress as tasks complete
+- **Epic wizard mode** - Guided epic creation flow
+
+### Building the Dashboard
+
+```bash
+# From project root
+cd ccpm && go build -o ccpm-tui ./cmd/ccpm-tui
+
+# Run it
+./ccpm/ccpm-tui
+```
+
+### Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `j/k` | Navigate up/down |
+| `Enter` | Select/expand |
+| `Tab` | Switch panels |
+| `w` | Launch wizard |
+| `q` | Quit |
+
+> **Note**: The TUI dashboard requires Go 1.21+ to build. A `/pm:dashboard` command for launching it directly is coming soon.
+
+---
 
 ## Technical Notes
 
