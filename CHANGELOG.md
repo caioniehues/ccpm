@@ -1,5 +1,82 @@
 # CCPM Changelog
 
+## [2025-12-23] - Skills Architecture & Major Refactoring Release
+
+### 🎯 Overview
+Major architectural overhaul introducing skills-based workflow management, migrating from `.claude/` to `ccpm/` directory structure, and comprehensive code quality remediation addressing 148 identified issues across skills, commands, and agents.
+
+### 🏗️ Architecture Changes
+
+- **Directory Structure Migration**
+  - Migrated distribution files from `.claude/` to `ccpm/`
+  - `.claude/` now reserved for project-specific working files (PRDs, epics)
+  - Clear separation between distribution package and local workspace
+
+- **Skills-Based Architecture (NEW)**
+  - Introduced `ccpm/skills/` directory with modular skill system
+  - Skills: `ccpm-context`, `ccpm-epic`, `ccpm-issue`, `ccpm-prd`, `ccpm-testing`, `ccpm-worktree`
+  - Each skill contains SKILL.md, workflows, and references
+  - Shared references in `ccpm/skills/shared-references/`
+
+### ✨ Added
+
+- **New Commands**
+  - `/doctor` - Diagnose CCPM installation issues
+  - `/setup` - Interactive setup wizard
+  - `/self-update` - Update CCPM to latest version
+  - `/uninstall` - Clean removal with backup option
+  - `/version` - Display version and configuration info
+
+- **Skill Workflow Files**
+  - Epic workflows: start, sync, decompose, merge, edit, close, oneshot, refresh
+  - Issue workflows: start, sync, analyze, edit, close, reopen, status, show
+  - Context workflows: create, update, prime
+  - Testing workflows: prime, run
+
+- **Shared Reference Documents**
+  - `frontmatter-operations.md` - YAML frontmatter handling
+  - `github-operations.md` - GitHub CLI integration patterns
+  - `worktree-operations.md` - Git worktree management
+  - `agent-coordination.md` - Multi-agent coordination patterns
+  - `datetime.md` - Date/time handling standards
+
+### 🔄 Changed
+
+- **Commands Transformed to Skill Routers**
+  - 23 commands now route to skill-based workflows
+  - Reduced duplication and improved maintainability
+  - Commands act as entry points, skills contain implementation
+
+- **Agent Enhancements**
+  - Agents now integrate with relevant skills
+  - Improved tool specifications and capabilities
+  - Enhanced coordination patterns for parallel execution
+
+### 🔧 Quality Remediation
+
+- **Skills Audit**: 42 issues identified and resolved
+  - Fixed XML structure compliance
+  - Added missing tool specifications
+  - Standardized workflow patterns
+
+- **Commands Audit**: 61 issues identified and resolved
+  - Modernized YAML frontmatter
+  - Fixed skill routing patterns
+  - Improved argument handling
+
+- **Agents Audit**: 45 issues identified and resolved
+  - Enhanced skill integrations
+  - Fixed tool permissions
+  - Improved return specifications
+
+### 📊 Summary
+- **Total Issues Addressed**: 148
+- **New Skill Files**: 25+
+- **Commands Updated**: 23
+- **Agents Enhanced**: 10
+
+---
+
 ## [2025-01-24] - Major Cleanup & Issue Resolution Release
 
 ### 🎯 Overview

@@ -133,22 +133,34 @@ No shortcuts. No assumptions. No regrets.
 ## System Architecture
 
 ```
-.claude/
-├── CLAUDE.md          # Always-on instructions (copy content to your project's CLAUDE.md file)
+ccpm/                  # ← Distribution package (shared via install)
 ├── agents/            # Task-oriented agents (for context preservation)
 ├── commands/          # Command definitions
 │   ├── context/       # Create, update, and prime context
 │   ├── pm/            # ← Project management commands (this system)
 │   └── testing/       # Prime and execute tests (edit this)
 ├── context/           # Project-wide context files
-├── epics/             # ← PM's local workspace (place in .gitignore)
+├── hooks/             # Hook configurations
+├── rules/             # Rule files for Claude behavior
+├── scripts/           # Utility scripts
+├── skills/            # Skill-based workflows (NEW)
+│   ├── ccpm-context/  # Context management skill
+│   ├── ccpm-epic/     # Epic management skill
+│   ├── ccpm-issue/    # Issue management skill
+│   ├── ccpm-prd/      # PRD management skill
+│   ├── ccpm-testing/  # Testing skill
+│   ├── ccpm-worktree/ # Worktree management skill
+│   └── shared-references/  # Shared reference docs
+├── ccpm.config        # System configuration
+└── settings.json.example  # Settings template
+
+.claude/               # ← Local working files (project-specific, in .gitignore)
+├── epics/             # Your epic workspaces
 │   └── [epic-name]/   # Epic and related tasks
 │       ├── epic.md    # Implementation plan
 │       ├── [#].md     # Individual task files
 │       └── updates/   # Work-in-progress updates
-├── prds/              # ← PM's PRD files
-├── rules/             # Place any rule files you'd like to reference here
-└── scripts/           # Place any script files you'd like to use here
+└── prds/              # Your PRD files
 ```
 
 ## Workflow Phases
@@ -179,6 +191,8 @@ Transforms PRD into a technical implementation plan with architectural decisions
 Breaks epic into concrete, actionable tasks with acceptance criteria, effort estimates, and parallelization flags.
 
 **Output:** `.claude/epics/feature-name/[task].md`
+
+> **Note:** The distribution files live in `ccpm/` while your working files (PRDs, epics) are created in `.claude/` for project-specific work.
 
 ### 4. GitHub Synchronization
 
@@ -328,7 +342,7 @@ GitHub doesn't need to know HOW the work got done – just that it IS done.
 ## Key Features & Benefits
 
 ### 🧠 **Context Preservation**
-Never lose project state again. Each epic maintains its own context, agents read from `.claude/context/`, and updates locally before syncing.
+Never lose project state again. Each epic maintains its own context, agents read from `ccpm/context/`, and updates locally before syncing.
 
 ### ⚡ **Parallel Execution**
 Ship faster with multiple agents working simultaneously. Tasks marked `parallel: true` enable conflict-free concurrent development.
@@ -401,7 +415,7 @@ Teams using this system report:
    cd path/to/your/project/
    iwr -useb https://automaze.io/ccpm/install | iex
    ```
-   > ⚠️ **IMPORTANT**: If you already have a `.claude` directory, clone this repository to a different directory and copy the contents of the cloned `.claude` directory to your project's `.claude` directory.
+   > ⚠️ **IMPORTANT**: The installer creates a `ccpm/` directory for distribution files and a `.claude/` directory for your local work files.
 
    See full/other installation options in the [installation guide ›](https://github.com/automazeio/ccpm/tree/main/install)
 
@@ -414,14 +428,15 @@ Teams using this system report:
    - Install GitHub CLI (if needed)
    - Authenticate with GitHub
    - Install [gh-sub-issue extension](https://github.com/yahsan2/gh-sub-issue) for proper parent-child relationships
-   - Create required directories
+   - Create required directories (`.claude/prds/`, `.claude/epics/`)
    - Update .gitignore
+   - Create GitHub labels (`epic`, `task`)
 
-3. **Create `CLAUDE.md`** with your repository information
+3. **Run system diagnostics** (optional):
    ```bash
-   /init include rules from .claude/CLAUDE.md
+   /doctor
    ```
-   > If you already have a `CLAUDE.md` file, run: `/re-init` to update it with important rules from `.claude/CLAUDE.md`.
+   Verifies your CCPM installation and checks for common issues.
 
 4. **Prime the system**:
    ```bash

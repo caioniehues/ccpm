@@ -11,11 +11,12 @@ Complete reference of all commands available in the Claude Code PM system.
 - [Context Commands](#context-commands)
 - [Testing Commands](#testing-commands)
 - [Utility Commands](#utility-commands)
+- [System Commands](#system-commands)
 - [Review Commands](#review-commands)
 
 ## Context Commands
 
-Commands for managing project context in `.claude/context/`.
+Commands for managing project context in `ccpm/context/`.
 
 ### `/context:create`
 - **Purpose**: Create initial project context documentation
@@ -47,7 +48,7 @@ Commands for test configuration and execution.
 - **Usage**: `/testing:prime`
 - **Description**: Detects and configures the project's testing framework, creates testing configuration, and prepares the test-runner agent.
 - **When to use**: Initial project setup or when testing framework changes
--  **Output**: `.claude/testing-config.md` with test commands and patterns
+- **Output**: `ccpm/testing-config.md` with test commands and patterns
 
 ### `/testing:run`
 - **Purpose**: Execute tests with intelligent analysis
@@ -76,6 +77,45 @@ General utility and maintenance commands.
 - **Description**: Updates the project's CLAUDE.md file with rules from `.claude/CLAUDE.md`, ensuring Claude instances have proper instructions.
 - **When to use**: After cloning PM system or updating rules
 - **Output**: Updated CLAUDE.md in project root
+
+## System Commands
+
+Commands for system maintenance and diagnostics.
+
+### `/doctor`
+- **Purpose**: Diagnose CCPM installation issues
+- **Usage**: `/doctor`
+- **Description**: Runs comprehensive diagnostics on your CCPM installation, checking for missing files, incorrect configurations, and common setup issues.
+- **When to use**: After installation or when experiencing issues
+- **Output**: Diagnostic report with recommendations
+
+### `/setup`
+- **Purpose**: Initial CCPM setup wizard
+- **Usage**: `/setup`
+- **Description**: Interactive setup wizard that guides you through initial CCPM configuration, including GitHub authentication and directory structure creation.
+- **When to use**: First-time setup or reconfiguration
+- **Output**: Configured CCPM environment
+
+### `/self-update`
+- **Purpose**: Update CCPM to latest version
+- **Usage**: `/self-update`
+- **Description**: Checks for updates and applies the latest CCPM version from the repository.
+- **When to use**: When updates are available or periodically
+- **Output**: Updated CCPM installation
+
+### `/uninstall`
+- **Purpose**: Remove CCPM from project
+- **Usage**: `/uninstall`
+- **Description**: Cleanly removes CCPM configuration and files while preserving your PRDs and epics.
+- **When to use**: When removing CCPM from a project
+- **Output**: Clean uninstallation with backup option
+
+### `/version`
+- **Purpose**: Display CCPM version information
+- **Usage**: `/version`
+- **Description**: Shows the current CCPM version, installation date, and configuration status.
+- **When to use**: When checking version or reporting issues
+- **Output**: Version and configuration information
 
 ## Review Commands
 
@@ -119,7 +159,7 @@ Commands that process lots of information:
 
 To add new commands:
 
-1. **Create file**: `commands/category/command-name.md`
+1. **Create file**: `ccpm/commands/category/command-name.md`
 2. **Add frontmatter**:
    ```yaml
    ---
@@ -156,4 +196,4 @@ This keeps the main conversation context clean while doing complex work.
 - The `/` prefix triggers command execution
 - Commands can spawn agents for context preservation
 - All PM commands (`/pm:*`) are documented in the main README
-- Commands follow rules defined in `/rules/`
+- Commands follow rules defined in `ccpm/rules/`
