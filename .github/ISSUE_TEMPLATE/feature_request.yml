@@ -1,0 +1,50 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for CCPM
+title: "[FEAT] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature Area
+      description: Which part of CCPM is this feature for?
+      options:
+        - PRD (Requirements)
+        - Epic (Planning)
+        - Issue (Task Management)
+        - Context (Context Management)
+        - Testing (Test Automation)
+        - TUI (Terminal Interface)
+        - CLI (Command Line Interface)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the feature request.
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case
+      description: Who is this for and what problem does it solve?
+      placeholder: "As a developer, I want to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe alternatives you've considered.
