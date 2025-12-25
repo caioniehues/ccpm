@@ -9,15 +9,18 @@ Push local development progress for issue #$ARGUMENTS to GitHub as comments for 
 </objective>
 
 <context>
-Invoke the ccpm-issue skill with action: sync
-Load skill: @ccpm/skills/ccpm-issue/SKILL.md
+Load workflow: @ccpm/skills/ccpm-issue/workflows/sync-issue.md
 Load reference: @ccpm/skills/shared-references/github-operations.md
+Load reference: @ccpm/skills/shared-references/datetime.md
+Issue: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-issue skill
-2. Execute the "sync" action following skill guidance
-3. Post update comment to GitHub
+1. Load the sync-issue workflow
+2. Read local progress and changes
+3. Format update as GitHub comment
+4. Post comment to issue
+5. Update last_synced timestamp
 </process>
 
 <success_criteria>

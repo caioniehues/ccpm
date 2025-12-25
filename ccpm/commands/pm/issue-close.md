@@ -9,14 +9,18 @@ Mark issue #$ARGUMENTS as complete and close it on GitHub.
 </objective>
 
 <context>
-Invoke the ccpm-issue skill with action: close
-Load skill: @ccpm/skills/ccpm-issue/SKILL.md
+Load workflow: @ccpm/skills/ccpm-issue/workflows/close-issue.md
+Load reference: @ccpm/skills/shared-references/github-operations.md
+Load reference: @ccpm/skills/shared-references/datetime.md
+Issue: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-issue skill
-2. Execute the "close" action following skill guidance
-3. Update local status and close on GitHub
+1. Load the close-issue workflow
+2. Update local task status to closed
+3. Close issue on GitHub with comment
+4. Update epic progress calculation
+5. Suggest next steps
 </process>
 
 <success_criteria>

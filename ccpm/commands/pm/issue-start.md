@@ -9,14 +9,18 @@ Begin work on issue #$ARGUMENTS with parallel agents based on work stream analys
 </objective>
 
 <context>
-Invoke the ccpm-issue skill with action: start
-Load skill: @ccpm/skills/ccpm-issue/SKILL.md
+Load workflow: @ccpm/skills/ccpm-issue/workflows/start-issue.md
+Load reference: @ccpm/skills/shared-references/agent-coordination.md
+Load reference: @ccpm/skills/shared-references/worktree-operations.md
+Issue: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-issue skill
-2. Execute the "start" action following skill guidance
-3. Launch parallel agents in epic worktree
+1. Load the start-issue workflow
+2. Verify analysis exists (run analyze if not)
+3. Enter epic worktree
+4. Launch parallel agents per work stream
+5. Initialize progress tracking
 </process>
 
 <success_criteria>
