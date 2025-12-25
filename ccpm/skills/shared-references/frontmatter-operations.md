@@ -61,6 +61,53 @@ updated: {current_datetime}
 The `created` and `updated` fields should be identical on initial creation.
 </creating_new_files>
 
+<wizard_approval_fields>
+**Wizard approval tracking (used by /pm:epic-wizard):**
+
+PRD approval fields:
+```yaml
+---
+name: feature-name
+status: approved              # pending | approved | revision-needed
+created: 2025-12-23T09:00:00Z
+updated: 2025-12-23T09:15:00Z
+approved_at: 2025-12-23T09:15:00Z    # Set when approved
+revision_count: 0             # Incremented on each revision
+---
+```
+
+Epic approval fields:
+```yaml
+---
+name: feature-name
+status: approved-for-work     # pending | approved | approved-for-work
+created: 2025-12-23T09:15:00Z
+updated: 2025-12-23T09:30:00Z
+approved_at: 2025-12-23T09:30:00Z
+revision_count: 0
+prd: feature-name             # Reference to source PRD
+---
+```
+
+Task status fields:
+```yaml
+---
+id: "001"
+name: task-name
+status: pending               # pending | in-progress | completed | blocked
+created: 2025-12-23T09:30:00Z
+updated: 2025-12-23T09:30:00Z
+epic: feature-name            # Reference to parent epic
+effort: S                     # S | M | L | XL
+---
+```
+
+**Status transitions:**
+- PRD: `pending` → `approved` (or `revision-needed` → `approved`)
+- Epic: `pending` → `approved` → `approved-for-work` (after tasks approved)
+- Task: `pending` → `in-progress` → `completed` (or `blocked`)
+</wizard_approval_fields>
+
 <validation_rules>
 - Frontmatter MUST start on line 1 with `---`
 - Closing `---` must be present

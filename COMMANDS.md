@@ -187,8 +187,60 @@ Commands often use agents for heavy lifting:
 - **file-analyzer**: Summarizes verbose files
 - **code-analyzer**: Hunts bugs across codebase
 - **parallel-worker**: Coordinates parallel execution
+- **prd-architect**: Creates structured PRD documents
+- **epic-planner**: Plans epic execution with dependency mapping
+- **task-decomposer**: Breaks epics into ordered tasks
+- **github-syncer**: Syncs CCPM files with GitHub issues
+- **worktree-manager**: Manages git worktrees for parallel work
+- **parallel-orchestrator**: Coordinates parallel task execution
 
 This keeps the main conversation context clean while doing complex work.
+
+## Skills and Workflow Routing
+
+CCPM uses a three-layer architecture to avoid circular references and ensure clean execution:
+
+```
+┌─────────────┐     ┌─────────────┐
+│  Commands   │     │   Skills    │
+│  /pm:*      │     │  ccpm-*     │
+└──────┬──────┘     └──────┬──────┘
+       │                   │
+       └───────┬───────────┘
+               │
+               ▼
+       ┌───────────────┐
+       │   Workflows   │
+       │  (the actual  │
+       │  implementation)│
+       └───────────────┘
+```
+
+### How It Works
+
+1. **Commands** (e.g., `/pm:prd-new`) provide the user interface
+2. **Skills** (e.g., `ccpm-prd`) organize related workflows and provide context
+3. **Workflows** (e.g., `new-prd.md`) contain the actual implementation steps
+
+### Why This Matters
+
+- **No circular references**: Commands don't invoke skills that invoke commands
+- **Single source of truth**: Implementation logic lives in one place (workflows)
+- **Reusability**: Both commands and skills can reference the same workflow
+- **Maintainability**: Update a workflow once, all callers get the update
+
+### Available Skills
+
+| Skill | Purpose | Workflows |
+|-------|---------|-----------|
+| `ccpm-prd` | PRD lifecycle management | new-prd, edit-prd, parse-prd |
+| `ccpm-epic` | Epic lifecycle management | decompose, sync, start, close, merge, edit, oneshot, refresh |
+| `ccpm-issue` | Issue lifecycle management | analyze, start, status, sync, edit, close, reopen |
+| `ccpm-context` | Project context management | create-context, update-context, prime-context |
+| `ccpm-testing` | Test execution | prime-testing, run-tests |
+| `ccpm-worktree` | Git worktree management | (worktree operations) |
+
+Skills are located in `ccpm/skills/` and documented in each skill's `SKILL.md` file.
 
 ## Notes
 

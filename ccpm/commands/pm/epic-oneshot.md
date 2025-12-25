@@ -9,14 +9,15 @@ Decompose epic "$ARGUMENTS" into tasks and sync to GitHub in one operation.
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: oneshot
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/oneshot-epic.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "oneshot" action following skill guidance
-3. Run decompose then sync as orchestrated sequence
+1. Load the oneshot-epic workflow
+2. Execute decompose workflow (create task files)
+3. Execute sync workflow (push to GitHub, create worktree)
+4. Report combined results
 </process>
 
 <success_criteria>

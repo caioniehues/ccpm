@@ -9,14 +9,17 @@ Reopen closed issue #$ARGUMENTS with optional reason.
 </objective>
 
 <context>
-Invoke the ccpm-issue skill with action: reopen
-Load skill: @ccpm/skills/ccpm-issue/SKILL.md
+Load workflow: @ccpm/skills/ccpm-issue/workflows/reopen-issue.md
+Load reference: @ccpm/skills/shared-references/github-operations.md
+Issue: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-issue skill
-2. Execute the "reopen" action following skill guidance
-3. Reopen on GitHub and update epic progress
+1. Load the reopen-issue workflow
+2. Update local task status to open
+3. Reopen issue on GitHub with reason
+4. Recalculate epic progress
+5. Document reopening in history
 </process>
 
 <success_criteria>

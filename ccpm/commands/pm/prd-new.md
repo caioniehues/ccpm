@@ -9,19 +9,22 @@ Launch brainstorming session to create a comprehensive PRD for feature: $ARGUMEN
 </objective>
 
 <context>
-Invoke the ccpm-prd skill with action: new
-Load skill: @ccpm/skills/ccpm-prd/SKILL.md
+Load workflow: @ccpm/skills/ccpm-prd/workflows/new-prd.md
+Load reference: @ccpm/skills/shared-references/datetime.md
 Feature name: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-prd skill
-2. Execute the "new" action following skill guidance
-3. Conduct brainstorming and create PRD at .claude/prds/$ARGUMENTS.md
+1. Load the new-prd workflow
+2. Execute preflight checks (validate name, check existing, create directory)
+3. Conduct structured brainstorming session (4 phases)
+4. Create PRD at .claude/prds/$ARGUMENTS.md with all sections
+5. Validate and provide next steps
 </process>
 
 <success_criteria>
 - PRD created with all required sections
 - Valid frontmatter with real datetime
-- Next steps provided to user
+- No placeholder content
+- Next steps provided: /pm:prd-parse $ARGUMENTS
 </success_criteria>

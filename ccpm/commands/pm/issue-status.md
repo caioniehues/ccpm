@@ -9,14 +9,16 @@ Check the current status of issue #$ARGUMENTS and provide a quick status report.
 </objective>
 
 <context>
-Invoke the ccpm-issue skill with action: status
-Load skill: @ccpm/skills/ccpm-issue/SKILL.md
+Load workflow: @ccpm/skills/ccpm-issue/workflows/status-issue.md
+Issue: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-issue skill
-2. Execute the "status" action following skill guidance
-3. Display status with actionable suggestions
+1. Load the status-issue workflow
+2. Read local task file and frontmatter
+3. Check GitHub issue state
+4. Show epic context if applicable
+5. Suggest next actions based on status
 </process>
 
 <success_criteria>

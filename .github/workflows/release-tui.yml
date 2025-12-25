@@ -1,0 +1,78 @@
+name: Release TUI Dashboard
+
+on:
+  push:
+    tags:
+      - 'tui-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Run tests
+        working-directory: ccpm
+        run: go test -v -cover ./internal/...
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/tui-}" >> $GITHUB_OUTPUT
+
+      - name: Build binaries
+        working-directory: ccpm
+        run: make cross-compile VERSION=${{ steps.version.outputs.VERSION }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ccpm/dist/ccpm-tui-*
+            ccpm/dist/checksums.txt
+          body: |
+            ## CCPM TUI Dashboard ${{ steps.version.outputs.VERSION }}
+
+            ### Installation
+
+            Download the appropriate binary for your platform and place it in your PATH.
+
+            **Linux (AMD64):**
+            ```bash
+            curl -sL https://github.com/automazeio/ccpm/releases/download/tui-${{ steps.version.outputs.VERSION }}/ccpm-tui-linux-amd64.gz | gunzip > ccpm-tui
+            chmod +x ccpm-tui
+            sudo mv ccpm-tui /usr/local/bin/
+            ```
+
+            **macOS (Apple Silicon):**
+            ```bash
+            curl -sL https://github.com/automazeio/ccpm/releases/download/tui-${{ steps.version.outputs.VERSION }}/ccpm-tui-darwin-arm64.gz | gunzip > ccpm-tui
+            chmod +x ccpm-tui
+            sudo mv ccpm-tui /usr/local/bin/
+            ```
+
+            **Or install via Go:**
+            ```bash
+            go install github.com/automazeio/ccpm/cmd/ccpm-tui@${{ steps.version.outputs.VERSION }}
+            ```
+
+            ### Checksums
+            Verify your download with the checksums.txt file.

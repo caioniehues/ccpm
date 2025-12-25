@@ -71,24 +71,35 @@ Provide the operation name or number, optionally with epic name.
 <routing>
 | Response | Operation | Workflow |
 |----------|-----------|----------|
-| 1, "create" | Create epic from PRD | Delegate to `/pm:prd-parse` command |
-| 2, "decompose", "break down", "tasks" | Decompose epic | Delegate to `/pm:epic-decompose` command |
-| 3, "sync", "github", "push" | Sync to GitHub | Delegate to `/pm:epic-sync` command |
-| 4, "oneshot", "one shot", "quick" | Decompose + Sync | Delegate to `/pm:epic-oneshot` command |
-| 5, "start", "launch", "begin", "execute" | Start execution | Delegate to `/pm:epic-start` command |
-| 6, "list", "show all", "ls" | List epics | Delegate to `/pm:epic-list` command |
-| 7, "show", "view", "details", "info" | Show epic details | Delegate to `/pm:epic-show` command |
-| 8, "status", "progress", "state" | Show task status | Delegate to `/pm:epic-status` command |
-| 9, "edit", "modify", "update" | Edit epic | Delegate to `/pm:epic-edit` command |
-| 10, "refresh", "recalculate", "update progress" | Refresh progress | Delegate to `/pm:epic-refresh` command |
-| 11, "close", "complete", "finish" | Close epic | Delegate to `/pm:epic-close` command |
-| 12, "merge" | Merge epic branch | Delegate to `/pm:epic-merge` command |
-| 13, "worktree", "start worktree" | Create worktree | Delegate to `/pm:epic-start-worktree` command |
+| 1, "create" | Create epic from PRD | Use ccpm-prd skill: `workflows/parse-prd.md` |
+| 2, "decompose", "break down", "tasks" | Decompose epic | `workflows/decompose-epic.md` |
+| 3, "sync", "github", "push" | Sync to GitHub | `workflows/sync-epic.md` |
+| 4, "oneshot", "one shot", "quick" | Decompose + Sync | `workflows/oneshot-epic.md` |
+| 5, "start", "launch", "begin", "execute" | Start execution | `workflows/start-epic.md` |
+| 6, "list", "show all", "ls" | List epics | Shell script `/pm:epic-list` |
+| 7, "show", "view", "details", "info" | Show epic details | Shell script `/pm:epic-show` |
+| 8, "status", "progress", "state" | Show task status | Shell script `/pm:epic-status` |
+| 9, "edit", "modify", "update" | Edit epic | `workflows/edit-epic.md` |
+| 10, "refresh", "recalculate", "update progress" | Refresh progress | `workflows/refresh-epic.md` |
+| 11, "close", "complete", "finish" | Close epic | `workflows/close-epic.md` |
+| 12, "merge" | Merge epic branch | `workflows/merge-epic.md` |
+| 13, "worktree", "start worktree" | Create worktree | Use ccpm-worktree skill |
 
-**IMPORTANT**: All epic operations are implemented as slash commands in `ccpm/commands/pm/epic-*.md`. This skill routes to the appropriate command based on user intent.
-
-**After determining the operation, delegate to the corresponding slash command.**
+**After reading the workflow, follow it exactly.**
 </routing>
+
+<workflows_index>
+| Workflow | Purpose |
+|----------|---------|
+| decompose-epic.md | Break epic into concrete, actionable tasks |
+| sync-epic.md | Push epic and tasks to GitHub as issues |
+| oneshot-epic.md | Decompose and sync in one operation |
+| start-epic.md | Launch parallel agents to work on epic |
+| edit-epic.md | Edit epic details and frontmatter |
+| refresh-epic.md | Update epic progress from task states |
+| close-epic.md | Mark epic as complete and archive |
+| merge-epic.md | Merge epic branch back to main |
+</workflows_index>
 
 <command_reference>
 All commands are in `ccpm/commands/pm/`:

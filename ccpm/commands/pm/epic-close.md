@@ -9,15 +9,17 @@ Mark epic "$ARGUMENTS" as complete after verifying all tasks are done.
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: close
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/close-epic.md
 Load reference: @ccpm/skills/shared-references/github-operations.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "close" action following skill guidance
-3. Verify tasks complete, update status, close on GitHub
+1. Load the close-epic workflow
+2. Verify all tasks have status: closed
+3. Update epic status to completed with 100% progress
+4. Close GitHub epic issue
+5. Offer archive option
 </process>
 
 <success_criteria>

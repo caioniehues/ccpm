@@ -9,14 +9,17 @@ Analyze issue #$ARGUMENTS to identify parallel work streams for maximum efficien
 </objective>
 
 <context>
-Invoke the ccpm-issue skill with action: analyze
-Load skill: @ccpm/skills/ccpm-issue/SKILL.md
+Load workflow: @ccpm/skills/ccpm-issue/workflows/analyze-issue.md
+Load reference: @ccpm/skills/shared-references/agent-coordination.md
+Issue: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-issue skill
-2. Execute the "analyze" action following skill guidance
-3. Create analysis file with parallel streams identified
+1. Load the analyze-issue workflow
+2. Read issue details and requirements
+3. Identify independent work streams
+4. Document file scopes to avoid conflicts
+5. Create analysis file with parallel streams
 </process>
 
 <success_criteria>

@@ -19,23 +19,27 @@ jobs:
     #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
 
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
-      contents: read
-      pull-requests: read
-      issues: read
+      contents: write
+      pull-requests: write
+      issues: write
       id-token: write
+      actions: read
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
+          # Authentication
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
           # Allow the Claude bot to initiate workflows
           allowed_bots: 'claude'
@@ -53,9 +57,9 @@ jobs:
 
             Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
 
-            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+            Use `gh pr comment` or `gh pr review` to leave your review on the PR.
 
-          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # or https://code.claude.com/docs/en/cli-reference for available options
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
+          # Full GitHub CLI access for reviews, comments, labels, and issue management
+          claude_args: |
+            --allowedTools "Bash(gh issue:*),Bash(gh pr:*),Bash(gh search:*),Bash(gh label:*),Bash(git:*),Read,Grep,Glob"
 

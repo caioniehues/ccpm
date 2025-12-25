@@ -9,16 +9,18 @@ Push epic "$ARGUMENTS" and tasks to GitHub as issues, rename files to issue numb
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: sync
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/sync-epic.md
 Load reference: @ccpm/skills/shared-references/github-operations.md
 Load reference: @ccpm/skills/shared-references/worktree-operations.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "sync" action following skill guidance
-3. Create GitHub issues, rename files, create worktree
+1. Load the sync-epic workflow
+2. Verify epic and tasks exist locally
+3. Create GitHub issues (epic as parent, tasks as sub-issues)
+4. Rename local files from 001.md to {issue_id}.md
+5. Create worktree for development
 </process>
 
 <success_criteria>
