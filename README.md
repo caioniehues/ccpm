@@ -473,8 +473,11 @@ A terminal-based visual dashboard is now available for real-time epic and task t
 ### Features
 - **Visual epic/task overview** - See all your work at a glance
 - **Keyboard navigation** - Fast, mouse-free interaction
-- **Real-time updates** - Watch progress as tasks complete
+- **Real-time updates** - Watch progress as tasks complete via file watching
 - **Epic wizard mode** - Guided epic creation flow
+- **Responsive layout** - Adapts to terminal size (80-120+ columns)
+- **Toast notifications** - Success, error, warning, and info messages
+- **Animations** - Loading spinners, progress updates, completion flashes
 
 ### Building the Dashboard
 
@@ -484,7 +487,19 @@ cd ccpm && go build -o ccpm-tui ./cmd/ccpm-tui
 
 # Run it
 ./ccpm/ccpm-tui
+
+# Run visual tests
+./scripts/test-dashboard.sh
 ```
+
+### Terminal Size Requirements
+
+| Size | Columns | Features |
+|------|---------|----------|
+| Minimum | 80×24 | Basic single-column layout |
+| Small | 80-99 | Abbreviated labels, compact progress |
+| Medium | 100-119 | Full labels, activity log |
+| Large | 120+ | Side-by-side panels |
 
 ### Keyboard Shortcuts
 
@@ -493,7 +508,13 @@ cd ccpm && go build -o ccpm-tui ./cmd/ccpm-tui
 | `j/k` | Navigate up/down |
 | `Enter` | Select/expand |
 | `Tab` | Switch panels |
+| `e` | Epic detail view |
+| `t` | Tasks view |
+| `p` | PRD view |
 | `w` | Launch wizard |
+| `s` | Search |
+| `?` | Help |
+| `Esc` | Go back |
 | `q` | Quit |
 
 > **Note**: The TUI dashboard requires Go 1.21+ to build. A `/pm:dashboard` command for launching it directly is coming soon.

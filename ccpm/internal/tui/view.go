@@ -5,11 +5,17 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/automazeio/ccpm/internal/tui/views"
 )
 
 func (m Model) View() string {
 	if !m.Ready {
 		return m.Spinner.View() + " Initializing..."
+	}
+
+	if m.Layout.IsTooSmall() {
+		return views.RenderTooSmall(m.Width, m.Height, MinWidth, MinHeight)
 	}
 
 	var content string
@@ -36,7 +42,22 @@ func (m Model) View() string {
 		content = m.viewDashboard()
 	}
 
-	return AppFrame.Width(m.Width - 2).Height(m.Height - 2).Render(content)
+	mainView := AppFrame.Width(m.Width - 2).Height(m.Height - 2).Render(content)
+
+	if m.Toasts.HasToasts() {
+		toastView := m.Toasts.View()
+		return m.overlayToasts(mainView, toastView)
+	}
+
+	return mainView
+}
+
+func (m Model) overlayToasts(main, toasts string) string {
+	return lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		main,
+		lipgloss.Place(0, m.Height, lipgloss.Right, lipgloss.Top, toasts),
+	)
 }
 
 func (m Model) viewDashboard() string {
@@ -46,9 +67,20 @@ func (m Model) viewDashboard() string {
 	sections = append(sections, "")
 	sections = append(sections, m.renderEpicCard())
 	sections = append(sections, "")
-	sections = append(sections, m.renderTaskList())
-	sections = append(sections, "")
-	sections = append(sections, m.renderActivityLog())
+
+	if m.Layout.SideBySide {
+		taskPanel := m.renderTaskList()
+		activityPanel := m.renderActivityLog()
+		sideBySide := lipgloss.JoinHorizontal(lipgloss.Top, taskPanel, "  ", activityPanel)
+		sections = append(sections, sideBySide)
+	} else {
+		sections = append(sections, m.renderTaskList())
+		if m.Layout.ActivityVisible {
+			sections = append(sections, "")
+			sections = append(sections, m.renderActivityLog())
+		}
+	}
+
 	sections = append(sections, "")
 	sections = append(sections, m.renderFooter())
 
@@ -76,11 +108,17 @@ func (m Model) renderEpicCard() string {
 		return SubtleCard.Render(MutedStyle.Render("No active epic. Run /pm:epic-wizard to create one."))
 	}
 
+	width := m.Layout.EpicCardWidth
+	if width == 0 {
+		width = m.Width - 10
+	}
+
 	e := m.ActiveEpic
 	title := SectionHeader.Render("◆ ACTIVE EPIC")
 	name := TitleStyle.Render(e.Name)
 	desc := BodyStyle.Render(e.Description)
 
+	m.Progress.Width = m.Layout.ProgressBarLen
 	progBar := m.Progress.ViewAs(e.Progress)
 	progText := MutedStyle.Render(fmt.Sprintf("%d/%d tasks", e.DoneCount, e.TaskCount))
 
@@ -99,7 +137,7 @@ func (m Model) renderEpicCard() string {
 		phases,
 	)
 
-	return ElevatedCard.Width(m.Width - 10).Render(content)
+	return ElevatedCard.Width(width).Render(content)
 }
 
 func (m Model) renderPhases(e *Epic) string {
@@ -124,19 +162,38 @@ func (m Model) renderPhases(e *Epic) string {
 }
 
 func (m Model) renderTaskList() string {
-	title := LabelStyle.Render("TASKS")
-	nav := MutedStyle.Render("[j/k nav]")
+	label := "TASKS"
+	if m.Layout.UseAbbreviatedLabels {
+		label = "TSK"
+	}
+	title := LabelStyle.Render(label)
+	nav := MutedStyle.Render("[j/k]")
 	header := title + "  " + nav
+
+	width := m.Layout.TaskListWidth
+	if width == 0 {
+		width = m.Width - 10
+	}
 
 	var lines []string
 	lines = append(lines, header)
-	lines = append(lines, MutedStyle.Render(strings.Repeat("─", m.Width-14)))
+	lines = append(lines, MutedStyle.Render(strings.Repeat("─", width-6)))
 
 	if len(m.Tasks) == 0 {
 		lines = append(lines, MutedStyle.Render("  No tasks yet"))
 	}
 
-	for i, task := range m.Tasks {
+	maxItems := m.Layout.TaskItemCount
+	if maxItems == 0 {
+		maxItems = len(m.Tasks)
+	}
+
+	displayTasks := m.Tasks
+	if len(displayTasks) > maxItems {
+		displayTasks = displayTasks[:maxItems]
+	}
+
+	for i, task := range displayTasks {
 		icon := IconPending
 		iconStyle := TaskPending
 		nameStyle := BodyStyle
@@ -148,6 +205,9 @@ func (m Model) renderTaskList() string {
 		case "in-progress":
 			icon = IconInProgress
 			iconStyle = TaskInProgress
+			if m.Animations.PulseActive {
+				iconStyle = TaskInProgress.Blink(true)
+			}
 		case "blocked":
 			icon = IconBlocked
 			iconStyle = TaskBlocked
@@ -159,7 +219,17 @@ func (m Model) renderTaskList() string {
 			nameStyle = AccentStyle
 		}
 
-		line := fmt.Sprintf("%s%s  %s: %s",
+		if m.Animations.IsFlashing(task.ID) {
+			nameStyle = lipgloss.NewStyle().Background(Volt).Foreground(Void)
+		}
+
+		offset := ""
+		if m.Animations.IsShaking(task.ID) {
+			offset = "  "
+		}
+
+		line := fmt.Sprintf("%s%s%s  %s: %s",
+			offset,
 			cursor,
 			iconStyle.Render(icon),
 			MutedStyle.Render(task.ID),
@@ -168,18 +238,32 @@ func (m Model) renderTaskList() string {
 		lines = append(lines, line)
 	}
 
+	if len(m.Tasks) > maxItems {
+		more := fmt.Sprintf("  ... +%d more", len(m.Tasks)-maxItems)
+		lines = append(lines, MutedStyle.Render(more))
+	}
+
 	content := lipgloss.JoinVertical(lipgloss.Left, lines...)
-	return SubtleCard.Width(m.Width - 10).Render(content)
+	return SubtleCard.Width(width).Render(content)
 }
 
 func (m Model) renderActivityLog() string {
-	title := LabelStyle.Render("ACTIVITY")
+	label := "ACTIVITY"
+	if m.Layout.UseAbbreviatedLabels {
+		label = "LOG"
+	}
+	title := LabelStyle.Render(label)
 	scroll := MutedStyle.Render("↑↓")
 	header := title + "  " + scroll
 
+	width := m.Layout.ActivityWidth
+	if width == 0 {
+		width = m.Width - 10
+	}
+
 	var lines []string
 	lines = append(lines, header)
-	lines = append(lines, MutedStyle.Render(strings.Repeat("─", m.Width-14)))
+	lines = append(lines, MutedStyle.Render(strings.Repeat("─", width-6)))
 
 	if len(m.ActivityLog) == 0 {
 		lines = append(lines, MutedStyle.Render("  No activity yet"))
@@ -209,7 +293,7 @@ func (m Model) renderActivityLog() string {
 	}
 
 	content := lipgloss.JoinVertical(lipgloss.Left, lines...)
-	return SubtleCard.Width(m.Width - 10).Render(content)
+	return SubtleCard.Width(width).Render(content)
 }
 
 func (m Model) renderFooter() string {

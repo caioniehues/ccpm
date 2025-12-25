@@ -6,6 +6,8 @@ import (
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/viewport"
+
+	"github.com/automazeio/ccpm/internal/tui/components"
 )
 
 type ViewMode int
@@ -38,11 +40,16 @@ type Model struct {
 	WizardStep int
 	WizardName string
 
-	TaskList list.Model
-	Progress progress.Model
-	Viewport viewport.Model
-	Spinner  spinner.Model
-	Help     help.Model
+	TaskList    list.Model
+	Progress    progress.Model
+	Viewport    viewport.Model
+	Spinner     spinner.Model
+	SyncSpinner spinner.Model
+	Help        help.Model
+
+	Toasts     components.ToastModel
+	Animations components.AnimationState
+	Layout     LayoutDimensions
 
 	Width  int
 	Height int
@@ -85,9 +92,8 @@ type ActivityEntry struct {
 }
 
 func NewModel() Model {
-	s := spinner.New()
-	s.Spinner = spinner.Dot
-	s.Style = AccentStyle
+	s := components.BrailleSpinner()
+	syncS := components.SyncSpinner()
 
 	p := progress.New(
 		progress.WithScaledGradient(string(Electric), string(Volt)),
@@ -96,7 +102,26 @@ func NewModel() Model {
 	return Model{
 		CurrentView: ViewDashboard,
 		Spinner:     s,
+		SyncSpinner: syncS,
 		Help:        help.New(),
 		Progress:    p,
+		Toasts:      components.NewToastModel(),
+		Animations:  components.NewAnimationState(),
 	}
+}
+
+func (m *Model) ShowSuccess(msg string) {
+	m.Toasts.Add(msg, components.ToastSuccess)
+}
+
+func (m *Model) ShowError(msg string) {
+	m.Toasts.Add(msg, components.ToastError)
+}
+
+func (m *Model) ShowWarning(msg string) {
+	m.Toasts.Add(msg, components.ToastWarning)
+}
+
+func (m *Model) ShowInfo(msg string) {
+	m.Toasts.Add(msg, components.ToastInfo)
 }

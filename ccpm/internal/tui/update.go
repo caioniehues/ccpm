@@ -4,6 +4,8 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+
+	"github.com/automazeio/ccpm/internal/tui/components"
 )
 
 type FileChangedMsg struct{ Path string }
@@ -14,6 +16,8 @@ type ErrorMsg struct{ Err error }
 func (m Model) Init() tea.Cmd {
 	return tea.Batch(
 		m.Spinner.Tick,
+		m.SyncSpinner.Tick,
+		components.StartPulse(),
 		loadEpics(),
 	)
 }
@@ -28,8 +32,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.Width = msg.Width
 		m.Height = msg.Height
+		m.Layout = CalculateLayout(msg.Width, msg.Height)
 		m.Ready = true
 		m.Help.Width = msg.Width
+		m.Toasts.Width = min(40, msg.Width-10)
 		return m, nil
 
 	case FileChangedMsg:
@@ -50,12 +56,26 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case ErrorMsg:
 		m.LastError = msg.Err
 		m.Loading = false
-		return m, nil
+		cmd := m.Toasts.Add(msg.Err.Error(), components.ToastError)
+		return m, cmd
 
 	case spinner.TickMsg:
 		var cmd tea.Cmd
 		m.Spinner, cmd = m.Spinner.Update(msg)
 		cmds = append(cmds, cmd)
+		m.SyncSpinner, cmd = m.SyncSpinner.Update(msg)
+		cmds = append(cmds, cmd)
+
+	case components.ToastDismissMsg:
+		m.Toasts.Update(msg)
+
+	case components.SuccessFlashMsg, components.SuccessFlashDoneMsg,
+		components.ErrorShakeMsg, components.ErrorShakeDoneMsg,
+		components.PulseTickMsg, components.CursorBlinkMsg:
+		cmd := m.Animations.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
 	}
 
 	return m, tea.Batch(cmds...)

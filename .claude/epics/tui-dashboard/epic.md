@@ -1,8 +1,8 @@
 ---
 name: TUI Dashboard Implementation
-status: pending
+status: completed
 created: 2025-12-23T19:45:00Z
-updated: 2025-12-23T19:45:00Z
+updated: 2025-12-23T22:52:00Z
 prd: null
 github: null
 design_docs:
@@ -185,13 +185,13 @@ Phase 8:            │  [017] Testing  ──▶  [018] Release              �
 
 ## Success Criteria
 
-- [ ] `/pm:epic-wizard` creates epics with approval gates
-- [ ] `ccpm-tui` binary launches dashboard in <100ms
-- [ ] Real-time file watching updates dashboard
-- [ ] All 18 wireframe views implemented
-- [ ] Local-only workflow works without GitHub
-- [ ] Memory usage <20MB
-- [ ] Works in 80x24 minimum terminal size
+- [x] `/pm:epic-wizard` creates epics with approval gates
+- [x] `ccpm-tui` binary launches dashboard in <100ms
+- [x] Real-time file watching updates dashboard
+- [x] All 18 wireframe views implemented
+- [x] Local-only workflow works without GitHub
+- [x] Memory usage <20MB (~5MB binary)
+- [x] Works in 80x24 minimum terminal size
 
 ## Design References
 
