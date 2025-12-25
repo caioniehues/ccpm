@@ -9,16 +9,19 @@ Merge completed epic "$ARGUMENTS" from worktree back to main branch.
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: merge
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/merge-epic.md
 Load reference: @ccpm/skills/shared-references/worktree-operations.md
 Load reference: @ccpm/skills/shared-references/github-operations.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "merge" action following skill guidance
-3. Validate, merge, cleanup worktree, close GitHub issues
+1. Load the merge-epic workflow
+2. Validate worktree is clean and all work committed
+3. Merge epic branch to main with --no-ff
+4. Remove worktree and delete branch
+5. Archive epic to .claude/epics/archived/
+6. Close GitHub issues
 </process>
 
 <success_criteria>

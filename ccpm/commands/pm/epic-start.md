@@ -9,16 +9,18 @@ Launch parallel agents to work on epic "$ARGUMENTS" tasks in shared branch.
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: start
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/start-epic.md
 Load reference: @ccpm/skills/shared-references/agent-coordination.md
 Load reference: @ccpm/skills/shared-references/worktree-operations.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "start" action following skill guidance
-3. Create/enter branch, identify ready issues, launch agents
+1. Load the start-epic workflow
+2. Verify epic worktree exists (create if needed)
+3. Identify ready tasks (status: open, dependencies met)
+4. Analyze each task for parallel work streams
+5. Launch parallel agents with proper coordination
 </process>
 
 <success_criteria>

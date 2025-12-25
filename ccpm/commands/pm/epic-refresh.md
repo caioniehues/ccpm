@@ -9,15 +9,17 @@ Update epic "$ARGUMENTS" progress based on current task states.
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: refresh
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/refresh-epic.md
 Load reference: @ccpm/skills/shared-references/frontmatter-operations.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "refresh" action following skill guidance
-3. Calculate progress, update status, sync GitHub checkboxes
+1. Load the refresh-epic workflow
+2. Read all task files and their statuses
+3. Calculate progress percentage
+4. Update epic status (backlog/in-progress/completed)
+5. Sync GitHub task list checkboxes
 </process>
 
 <success_criteria>

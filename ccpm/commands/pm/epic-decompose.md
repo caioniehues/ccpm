@@ -9,15 +9,17 @@ Break epic "$ARGUMENTS" into concrete, actionable tasks with proper dependency t
 </objective>
 
 <context>
-Invoke the ccpm-epic skill with action: decompose
-Load skill: @ccpm/skills/ccpm-epic/SKILL.md
+Load workflow: @ccpm/skills/ccpm-epic/workflows/decompose-epic.md
 Load reference: @ccpm/skills/shared-references/datetime.md
+Epic: $ARGUMENTS
 </context>
 
 <process>
-1. Load the ccpm-epic skill
-2. Execute the "decompose" action following skill guidance
-3. Create task files with frontmatter, acceptance criteria, and effort estimates
+1. Load the decompose-epic workflow
+2. Verify epic exists and read current state
+3. Analyze for parallel task creation strategy
+4. Create task files with frontmatter, acceptance criteria, and effort estimates
+5. Update epic with Tasks Created section
 </process>
 
 <success_criteria>
