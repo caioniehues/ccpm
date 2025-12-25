@@ -9,19 +9,22 @@ Edit the existing PRD for $ARGUMENTS with user-specified changes.
 </objective>
 
 <context>
-Invoke the ccpm-prd skill with action: edit
-Load skill: @ccpm/skills/ccpm-prd/SKILL.md
+Load workflow: @ccpm/skills/ccpm-prd/workflows/edit-prd.md
+Load reference: @ccpm/skills/shared-references/datetime.md
 PRD location: .claude/prds/$ARGUMENTS.md
 </context>
 
 <process>
-1. Load the ccpm-prd skill
-2. Execute the "edit" action following skill guidance
-3. Apply user changes and check epic impact
+1. Load the edit-prd workflow
+2. Verify PRD exists and read current content
+3. Present edit options to user (section or full edit)
+4. Apply changes and update timestamp
+5. Check for associated epic impact
 </process>
 
 <success_criteria>
 - PRD updated with real datetime
 - Epic impact notification if applicable
 - Original creation date preserved
+- Changes validated and summarized
 </success_criteria>

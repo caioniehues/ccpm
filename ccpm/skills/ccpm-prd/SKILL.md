@@ -58,16 +58,24 @@ What would you like to do with PRDs?
 </intake>
 
 <routing>
-| Response | Command | Description |
-|----------|---------|-------------|
-| 1, "new", "create" | `/pm:prd-new` | Launch brainstorming for new PRD |
-| 2, "edit", "modify", "update" | `/pm:prd-edit` | Edit existing PRD sections |
-| 3, "parse", "epic", "convert" | `/pm:prd-parse` | Convert PRD to implementation epic |
-| 4, "list", "show all", "view" | `/pm:prd-list` | List all PRDs with status |
-| 5, "status", "report", "stats" | `/pm:prd-status` | Show PRD status counts |
+| Response | Workflow | Purpose |
+|----------|----------|---------|
+| 1, "new", "create" | `workflows/new-prd.md` | Launch brainstorming for new PRD |
+| 2, "edit", "modify", "update" | `workflows/edit-prd.md` | Edit existing PRD sections |
+| 3, "parse", "epic", "convert" | `workflows/parse-prd.md` | Convert PRD to implementation epic |
+| 4, "list", "show all", "view" | Shell script `/pm:prd-list` | List all PRDs with status |
+| 5, "status", "report", "stats" | Shell script `/pm:prd-status` | Show PRD status counts |
 
-**After determining the operation, delegate to the appropriate command.**
+**After reading the workflow, follow it exactly.**
 </routing>
+
+<workflows_index>
+| Workflow | Purpose |
+|----------|---------|
+| new-prd.md | Create new PRD through structured brainstorming session |
+| edit-prd.md | Edit existing PRD sections with user-specified changes |
+| parse-prd.md | Convert PRD to technical implementation epic |
+</workflows_index>
 
 <operation_details>
 <operation name="create">
