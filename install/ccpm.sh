@@ -129,83 +129,61 @@ create_directories() {
 
 setup_claude_commands() {
     print_step "Setting up Claude Code commands..."
-    
-    rm -rf .claude/commands/pm .claude/commands/context .claude/commands/testing 2>/dev/null
-    
-    if [[ -d "ccpm/commands/pm" ]]; then
-        mkdir -p .claude/commands/pm
-        for cmd in ccpm/commands/pm/*.md; do
-            if [[ -f "$cmd" ]]; then
-                ln -sf "../../../$cmd" ".claude/commands/pm/$(basename "$cmd")"
-            fi
-        done
-    fi
-    
-    if [[ -d "ccpm/commands/context" ]]; then
-        mkdir -p .claude/commands/context
-        for cmd in ccpm/commands/context/*.md; do
-            if [[ -f "$cmd" ]]; then
-                ln -sf "../../../$cmd" ".claude/commands/context/$(basename "$cmd")"
-            fi
-        done
-    fi
-    
-    if [[ -d "ccpm/commands/testing" ]]; then
-        mkdir -p .claude/commands/testing
-        for cmd in ccpm/commands/testing/*.md; do
-            if [[ -f "$cmd" ]]; then
-                ln -sf "../../../$cmd" ".claude/commands/testing/$(basename "$cmd")"
-            fi
-        done
-    fi
-    
+
+    # Clean up existing command symlinks
+    find .claude/commands -type l -delete 2>/dev/null || true
+    find .claude/commands -type d -empty -delete 2>/dev/null || true
+
+    # Generic subdirectory handling - auto-detects all command categories
+    for subdir in ccpm/commands/*/; do
+        if [[ -d "$subdir" ]]; then
+            subdir_name=$(basename "$subdir")
+            mkdir -p ".claude/commands/$subdir_name"
+            for cmd in "$subdir"*.md; do
+                if [[ -f "$cmd" ]]; then
+                    ln -sf "../../../$cmd" ".claude/commands/$subdir_name/$(basename "$cmd")"
+                fi
+            done
+        fi
+    done
+
+    # Top-level commands
     for cmd in ccpm/commands/*.md; do
         if [[ -f "$cmd" ]]; then
             ln -sf "../../$cmd" ".claude/commands/$(basename "$cmd")"
         fi
     done
-    
+
     print_success "Claude Code commands linked"
 }
 
 setup_opencode_commands() {
     print_step "Setting up OpenCode commands..."
-    
-    rm -rf .opencode/command/pm .opencode/command/context .opencode/command/testing 2>/dev/null
-    
-    if [[ -d "ccpm/commands/pm" ]]; then
-        mkdir -p .opencode/command/pm
-        for cmd in ccpm/commands/pm/*.md; do
-            if [[ -f "$cmd" ]]; then
-                ln -sf "../../../$cmd" ".opencode/command/pm/$(basename "$cmd")"
-            fi
-        done
-    fi
-    
-    if [[ -d "ccpm/commands/context" ]]; then
-        mkdir -p .opencode/command/context
-        for cmd in ccpm/commands/context/*.md; do
-            if [[ -f "$cmd" ]]; then
-                ln -sf "../../../$cmd" ".opencode/command/context/$(basename "$cmd")"
-            fi
-        done
-    fi
-    
-    if [[ -d "ccpm/commands/testing" ]]; then
-        mkdir -p .opencode/command/testing
-        for cmd in ccpm/commands/testing/*.md; do
-            if [[ -f "$cmd" ]]; then
-                ln -sf "../../../$cmd" ".opencode/command/testing/$(basename "$cmd")"
-            fi
-        done
-    fi
-    
+
+    # Clean up existing command symlinks
+    find .opencode/command -type l -delete 2>/dev/null || true
+    find .opencode/command -type d -empty -delete 2>/dev/null || true
+
+    # Generic subdirectory handling
+    for subdir in ccpm/commands/*/; do
+        if [[ -d "$subdir" ]]; then
+            subdir_name=$(basename "$subdir")
+            mkdir -p ".opencode/command/$subdir_name"
+            for cmd in "$subdir"*.md; do
+                if [[ -f "$cmd" ]]; then
+                    ln -sf "../../../$cmd" ".opencode/command/$subdir_name/$(basename "$cmd")"
+                fi
+            done
+        fi
+    done
+
+    # Top-level commands
     for cmd in ccpm/commands/*.md; do
         if [[ -f "$cmd" ]]; then
             ln -sf "../../$cmd" ".opencode/command/$(basename "$cmd")"
         fi
     done
-    
+
     print_success "OpenCode commands linked"
 }
 
@@ -219,6 +197,7 @@ update_gitignore() {
         "# CCPM - Claude Code Project Management"
         ".claude/prds/"
         ".claude/epics/"
+        ".claude/brainstorm/"
         ".claude/settings.local.json"
     )
     
@@ -339,7 +318,7 @@ print_instructions() {
     echo "  /pm:help          - Show all PM commands"
     echo "  /pm:prd-new       - Create a new PRD"
     echo "  /pm:status        - Show project status"
-    echo "  /pm:epic-wizard   - Guided epic creation"
+    echo "  /cascade:start    - CASCADE FLOW (parallel brainstorming)"
     echo ""
     echo "Quick start:"
     echo "  1. Restart your session"
