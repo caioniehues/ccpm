@@ -36,6 +36,42 @@ Specialized agents that do heavy work and return concise summaries to preserve c
 - **Usage**: When executing parallel work streams in a worktree
 - **Returns**: Consolidated status of all parallel work
 
+### 📋 `prd-architect`
+- **Purpose**: Design and structure Product Requirements Documents following CCPM conventions
+- **Pattern**: Analyze requirements → Apply PRD template → Create hierarchical structure → Return structured PRD
+- **Usage**: When creating new PRDs, reviewing existing PRD structure, or ensuring PRDs follow best practices
+- **Returns**: Well-structured PRD with numbered requirements, acceptance criteria, and success metrics
+
+### 📐 `epic-planner`
+- **Purpose**: Plan epic execution strategy with dependency mapping and sequencing
+- **Pattern**: Analyze epic → Build dependency graph → Identify critical path → Return execution plan
+- **Usage**: When you need to plan epic execution, determine task ordering, or identify parallel opportunities
+- **Returns**: Comprehensive execution plan with phases, dependencies, risks, and parallel streams
+
+### 🧩 `task-decomposer`
+- **Purpose**: Break down epics into ordered, dependent tasks
+- **Pattern**: Analyze requirements → Enumerate tasks → Map dependencies → Return task breakdown
+- **Usage**: When decomposing features into actionable work items with dependency ordering
+- **Returns**: Structured task breakdown with phases, dependency graph, and critical path
+
+### 🔄 `github-syncer`
+- **Purpose**: Bidirectional synchronization between CCPM files and GitHub issues
+- **Pattern**: Read local files → Create/update GitHub issues → Update local frontmatter → Return sync report
+- **Usage**: When syncing epics/tasks to GitHub, posting progress updates, or importing GitHub changes
+- **Returns**: Sync summary with created issues, updated files, and next steps
+
+### 🌳 `worktree-manager`
+- **Purpose**: Manage git worktrees for parallel development
+- **Pattern**: Create worktree → Monitor status → Merge changes → Cleanup → Return status
+- **Usage**: When setting up epic branches, coordinating parallel work, or merging completed epics
+- **Returns**: Worktree status with paths, branches, commit counts, and recommended actions
+
+### 🎯 `parallel-orchestrator`
+- **Purpose**: Coordinate parallel task execution across worktrees
+- **Pattern**: Parse epic → Build dependency graph → Spawn parallel agents → Aggregate results → Return summary
+- **Usage**: When starting an epic with multiple parallel tasks or orchestrating multi-agent workflows
+- **Returns**: Execution summary with task status, duration, changes made, and next steps
+
 ## Why Agents?
 
 Agents are **context firewalls** that protect the main conversation from information overload:
@@ -75,6 +111,24 @@ Task: "Implement issue #1234 with parallel streams"
 Agent: parallel-worker
 Returns: "Completed 4/4 streams, 15 files modified"
 Main thread never sees: Individual implementation details
+
+# Creating a PRD
+Task: "Create PRD for user authentication feature"
+Agent: prd-architect
+Returns: "PRD created with 12 requirements, 5 NFRs, 8 acceptance criteria"
+Main thread never sees: Template analysis and structure decisions
+
+# Planning epic execution
+Task: "Plan execution for authentication epic"
+Agent: epic-planner
+Returns: "3 phases, 8 tasks, critical path: auth-core → session → oauth"
+Main thread never sees: Dependency graph construction details
+
+# Syncing to GitHub
+Task: "Push authentication epic to GitHub"
+Agent: github-syncer
+Returns: "Created epic #42, 8 task issues (#43-#50), all linked"
+Main thread never sees: Individual issue creation and frontmatter updates
 ```
 
 ## Creating New Agents
