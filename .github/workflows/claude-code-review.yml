@@ -37,7 +37,9 @@ jobs:
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
+          # Authentication
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
           # Allow the Claude bot to initiate workflows
           allowed_bots: 'claude'
